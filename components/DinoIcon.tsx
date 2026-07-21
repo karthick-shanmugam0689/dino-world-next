@@ -198,4 +198,78 @@ const SILHOUETTES: Record<SilhouetteKey, React.ReactNode> = {
       <path d="M50 50 C48 58 52 63 49 69 L46 74 L58 74 L54 67 L57 55 Z" />
     </g>
   ),
+  mosasaur: (
+    <g>
+      {/* tail tapering to a downturned shark-like fluke */}
+      <path d="M2 42 L44 37 L44 50 Z" />
+      <path d="M4 36 L16 24 L18 42 Z" />
+      {/* long streamlined body */}
+      <ellipse cx="56" cy="43" rx="24" ry="10" transform="rotate(-3 56 43)" />
+      {/* front flipper */}
+      <path d="M52 50 L46 62 L60 53 Z" />
+      {/* rear flipper */}
+      <path opacity="0.65" d="M32 48 L27 58 L38 51 Z" />
+      {/* long toothy jaw */}
+      <path d="M78 34 L108 29 L115 34 L108 38 L94 39 L82 44 C79 41 78 37 78 34 Z" />
+      <circle cx="90" cy="36" r="2" fill={eyeFill} />
+    </g>
+  ),
+  plesiosaur: (
+    <g>
+      {/* short tail */}
+      <path d="M8 54 L28 50 L28 60 Z" />
+      {/* small round body */}
+      <ellipse cx="40" cy="53" rx="16" ry="11" />
+      {/* front flipper */}
+      <path d="M36 62 L28 74 L46 64 Z" />
+      {/* rear flipper */}
+      <path opacity="0.65" d="M20 58 L14 70 L28 62 Z" />
+      {/* extremely long, gently curving neck */}
+      <path d="M50 48 C64 42 76 30 82 14 L90 17 C84 34 72 46 58 54 Z" />
+      {/* tiny head */}
+      <ellipse cx="88" cy="12" rx="7" ry="4.5" />
+      <circle cx="91" cy="11" r="1.4" fill={eyeFill} />
+    </g>
+  ),
+  ptero: (
+    <g>
+      {/* far wing, spread up and back */}
+      <path opacity="0.55" d="M46 40 L20 8 L36 6 L58 32 Z" />
+      {/* near wing, spread forward and down */}
+      <path d="M50 42 L92 12 L88 24 L60 50 Z" />
+      {/* body */}
+      <ellipse cx="52" cy="46" rx="13" ry="9" transform="rotate(-10 52 46)" />
+      {/* legs */}
+      <path opacity="0.65" d="M46 54 L42 68 L50 68 L52 56 Z" />
+      <path d="M56 55 L54 70 L62 70 L62 57 Z" />
+      {/* long neck */}
+      <path d="M62 42 C68 36 74 32 80 30 L84 36 C79 39 74 43 70 48 Z" />
+      {/* head with beak and small crest */}
+      <path d="M78 24 L100 27 L106 31 L98 34 L86 33 L76 30 Z" />
+      <path d="M80 24 L86 12 L90 25 Z" />
+      <circle cx="86" cy="28" r="1.8" fill={eyeFill} />
+    </g>
+  ),
+  therizino: (
+    <g>
+      {/* tail */}
+      <path d="M2 44 L50 38 L50 52 Z" />
+      {/* pot belly */}
+      <ellipse cx="60" cy="46" rx="22" ry="15" transform="rotate(-4 60 46)" />
+      {/* neck */}
+      <path d="M74 38 C79 28 84 20 90 14 L98 20 C92 26 87 33 84 41 Z" />
+      {/* small head */}
+      <ellipse cx="94" cy="12" rx="7" ry="5" />
+      <circle cx="97" cy="11" r="1.4" fill={eyeFill} />
+      {/* long arm ending in giant claws */}
+      <path d="M66 42 L52 50 L56 54 L70 48 Z" />
+      <path d="M50 47 L44 43 L46 51 Z" />
+      <path d="M50 50 L43 49 L47 56 Z" />
+      <path d="M52 53 L46 55 L50 60 Z" />
+      {/* far leg */}
+      <path opacity="0.65" d="M56 58 C56 64 58 68 56 74 L66 74 L64 62 Z" />
+      {/* near leg */}
+      <path d="M44 58 C42 64 46 68 43 74 L53 74 L51 62 Z" />
+    </g>
+  ),
 }

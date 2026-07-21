@@ -102,4 +102,24 @@ export const dinoPhotos: Record<string, DinoPhotoSet> = {
     skeleton: { image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/WLA_hmns_Allosaurus_White_Background.jpg/960px-WLA_hmns_Allosaurus_White_Background.jpg', license: 'CC BY 2.5', source: 'https://commons.wikimedia.org/wiki/File:WLA_hmns_Allosaurus_White_Background.jpg' },
     realistic: { image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Allosaurus_Life_Restoration.jpg/960px-Allosaurus_Life_Restoration.jpg', license: 'CC BY-SA 3.0', source: 'https://commons.wikimedia.org/wiki/File:Allosaurus_Life_Restoration.jpg' },
   },
+  therizinosaurus: {
+    skeleton: { image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Therizinosaurus_arms.jpg/960px-Therizinosaurus_arms.jpg', license: 'CC BY 2.0', source: 'https://commons.wikimedia.org/wiki/File:Therizinosaurus_arms.jpg' },
+    realistic: { image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Therizinosaurus_Restoration.png/960px-Therizinosaurus_Restoration.png', license: 'CC BY 4.0', source: 'https://commons.wikimedia.org/wiki/File:Therizinosaurus_Restoration.png' },
+  },
+  mosasaurus: {
+    skeleton: { image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Mosasaurus_hoffmannii_-_skeleton.jpg/960px-Mosasaurus_hoffmannii_-_skeleton.jpg', license: 'CC BY-SA 3.0', source: 'https://commons.wikimedia.org/wiki/File:Mosasaurus_hoffmannii_-_skeleton.jpg' },
+    realistic: { image: 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Mosasaurus_missouriensis_NT.png', license: 'CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Mosasaurus_missouriensis_NT.png' },
+  },
+  plesiosaurus: {
+    skeleton: { image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Plesiosaurus_dolichodeirus_NHM.jpg/960px-Plesiosaurus_dolichodeirus_NHM.jpg', license: 'CC BY 2.0', source: 'https://commons.wikimedia.org/wiki/File:Plesiosaurus_dolichodeirus_NHM.jpg' },
+    realistic: { image: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Plesiosaurus_dolichodeirus.png', license: 'CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Plesiosaurus_dolichodeirus.png' },
+  },
+  pteranodon: {
+    skeleton: { image: 'https://upload.wikimedia.org/wikipedia/commons/1/13/Pteranodon_skeletal.jpg', license: 'CC BY 2.5', source: 'https://commons.wikimedia.org/wiki/File:Pteranodon_skeletal.jpg' },
+    realistic: { image: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Pteranodon_longiceps_mmartyniuk_wiki.png', license: 'CC BY 3.0', source: 'https://commons.wikimedia.org/wiki/File:Pteranodon_longiceps_mmartyniuk_wiki.png' },
+  },
+  quetzalcoatlus: {
+    skeleton: { image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg/960px-Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg', license: 'CC BY-SA 4.0', source: 'https://commons.wikimedia.org/wiki/File:Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg' },
+    realistic: { image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png/960px-Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png', license: 'CC BY 3.0', source: 'https://commons.wikimedia.org/wiki/File:Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png' },
+  },
 }

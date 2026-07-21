@@ -7,23 +7,31 @@ export type SilhouetteKey =
   | 'spino'
   | 'ankylo'
   | 'hadro'
+  | 'mosasaur'
+  | 'plesiosaur'
+  | 'ptero'
+  | 'therizino'
 
 export interface DinoModelConfig {
-  kind: 'theropod' | 'sauropod' | 'quadruped'
+  kind: 'theropod' | 'sauropod' | 'quadruped' | 'marine' | 'pterosaur'
   bodyLength: number
   bodyRadius: number
   neckLength: number
   neckRadius: number
   headSize: number
   tailLength: number
+  /** legs (theropod/sauropod/quadruped); flipper length (marine); leg height (pterosaur) */
   legHeight: number
+  /** leg/flipper thickness */
   legRadius: number
   /** resting pitch of the neck in radians (positive = raised) */
   neckAngle: number
-  /** forelimb style for bipeds; quadrupeds ignore this */
+  /** forelimb style for bipeds; quadrupeds/marine/pterosaur ignore this */
   arms?: 'none' | 'tiny' | 'normal' | 'long'
   /** quadrupeds only: front-leg length as a multiple of hind legs (brachiosaurids > 1) */
   frontLegScale?: number
+  /** pterosaurs only: wingtip-to-wingtip span in meters, used for the wing geometry */
+  wingSpan?: number
   features?: {
     plates?: boolean
     /** stegosaur variant: small plates over the shoulders, paired spikes over back + tail (Kentrosaurus) */
@@ -40,6 +48,12 @@ export interface DinoModelConfig {
     armor?: boolean
     /** neck rises steeply and stays straight (giraffe/brachiosaurid) rather than curving */
     steepNeck?: boolean
+    /** marine reptiles: shark-like downturned tail fluke instead of a tapering tip */
+    tailFluke?: boolean
+    /** pterosaurs: Pteranodon-style flattened backward-swept head crest */
+    crestBlade?: boolean
+    /** therizinosaurs: giant sickle claws on the hands instead of a small hand */
+    giantClaws?: boolean
   }
 }
 
@@ -69,6 +83,10 @@ export interface Dino {
   color: string
   featured?: boolean
   model: DinoModelConfig
+  /** unset = a true dinosaur; set for famous "Mesozoic megafauna" often mistaken for one */
+  clade?: 'marine-reptile' | 'pterosaur'
+  /** pterosaurs only: wingtip-to-wingtip span in meters, shown as its own stat */
+  wingSpanM?: number
 }
 
 export const families: Family[] = [
@@ -167,6 +185,46 @@ export const families: Family[] = [
       'The lions of the Jurassic — big-game hunters with hatchet-like skulls, powerful three-clawed arms and an appetite for stegosaurs and young sauropods. For 10 million years, nothing on land was safer than an Allosaurus was hungry.',
     period: 'Late Jurassic',
     traits: ['Apex Jurassic predators', 'Hatchet-like skull', 'Strong three-fingered arms', 'Hunted giants'],
+  },
+  {
+    id: 'therizinosauridae',
+    name: 'Therizinosauridae',
+    description:
+      'One of the strangest dinosaur families ever found — feathered, pot-bellied theropods that gave up hunting for browsing leaves, keeping only their ancestors\' claws, now grown absurdly long. For decades, isolated claws were mistaken for those of a giant turtle.',
+    period: 'Late Cretaceous',
+    traits: ['True theropod dinosaur', 'Longest claws of any known animal', 'Herbivorous despite predator ancestry', 'Feathered body'],
+  },
+  {
+    id: 'mosasauridae',
+    name: 'Mosasauridae',
+    description:
+      'Giant marine lizards — not dinosaurs at all, but close relatives of today\'s monitor lizards and snakes. Mosasaurs ruled the Late Cretaceous oceans as apex predators, propelled by a shark-like tail fin and armed with a double-hinged jaw that could swallow prey almost whole.',
+    period: 'Late Cretaceous',
+    traits: ['Not a dinosaur — marine reptile', 'Shark-like tail fluke', 'Double-hinged jaw', 'Apex ocean predator'],
+  },
+  {
+    id: 'plesiosauridae',
+    name: 'Plesiosauridae',
+    description:
+      'Long-necked marine reptiles — not dinosaurs, but a separate lineage that returned to the sea while dinosaurs still ruled the land. Plesiosaurus, unearthed by Mary Anning in 1823, was one of the fossils that first convinced the world extinct monsters had truly existed.',
+    period: 'Early Jurassic',
+    traits: ['Not a dinosaur — marine reptile', 'Extremely long neck', 'Four large paddle-like flippers', 'First described by Mary Anning'],
+  },
+  {
+    id: 'pteranodontidae',
+    name: 'Pteranodontidae',
+    description:
+      'Toothless, crested pterosaurs — flying reptiles, not dinosaurs, and the closest thing the Cretaceous skies had to an albatross. Pteranodon patrolled the shores of the great inland sea that split North America in two, snatching fish from the surface as it soared.',
+    period: 'Late Cretaceous',
+    traits: ['Not a dinosaur — pterosaur', 'Toothless beak', 'Backward-swept head crest', 'Multi-meter wingspan'],
+  },
+  {
+    id: 'azhdarchidae',
+    name: 'Azhdarchidae',
+    description:
+      'Giant, long-necked pterosaurs — flying reptiles, not dinosaurs — that include the largest animals ever known to fly. Azhdarchids likely spent as much time stalking the ground on all fours as a giant stork as they did in the air, snapping up small prey with a long toothless beak.',
+    period: 'Late Cretaceous',
+    traits: ['Not a dinosaur — pterosaur', 'Largest known flying animals', 'Extremely long neck', 'Stalked prey on the ground'],
   },
 ]
 
@@ -786,6 +844,152 @@ export const dinosaurs: Dino[] = [
       headSize: 1.05, tailLength: 4.2, legHeight: 2.0, legRadius: 0.28,
       neckAngle: 0.5, arms: 'normal',
     },
+  },
+  {
+    id: 'therizinosaurus',
+    name: 'Therizinosaurus',
+    meaning: 'Scythe lizard',
+    familyId: 'therizinosauridae',
+    silhouette: 'therizino',
+    period: 'Late Cretaceous · 70 Mya',
+    diet: 'Herbivore',
+    lengthM: 9,
+    heightM: 5,
+    weightKg: 3000,
+    speedKmh: 25,
+    location: 'Mongolia',
+    description:
+      'A theropod — the same group as T. rex — that gave up hunting for browsing treetops, keeping only its ancestors\' claws, grown to a size no other animal has matched. Feathered, pot-bellied and slow-moving, it must have looked as strange to other dinosaurs as it does to us.',
+    facts: [
+      'Its hand claws reached up to 70 cm along the curve — the longest of any known animal.',
+      'First described in 1954 from claws alone, initially mistaken for a giant turtle-like reptile.',
+      'Likely used its claws for hooking branches to feed, not for fighting.',
+    ],
+    color: '#5f7a4a',
+    model: {
+      kind: 'theropod',
+      bodyLength: 4.2, bodyRadius: 1.3, neckLength: 1.7, neckRadius: 0.28,
+      headSize: 0.55, tailLength: 2.6, legHeight: 2.0, legRadius: 0.34,
+      neckAngle: 0.45, arms: 'long', features: { giantClaws: true },
+    },
+  },
+  {
+    id: 'mosasaurus',
+    name: 'Mosasaurus',
+    meaning: 'Lizard of the Meuse River',
+    familyId: 'mosasauridae',
+    silhouette: 'mosasaur',
+    period: 'Late Cretaceous · 82–66 Mya',
+    diet: 'Carnivore',
+    lengthM: 13,
+    heightM: 2.4,
+    weightKg: 15000,
+    speedKmh: 12,
+    location: 'Netherlands, North America',
+    description:
+      'Not a dinosaur — a giant marine lizard, closer kin to monitor lizards and snakes. Mosasaurus ruled the Late Cretaceous seas as an apex predator, swallowing prey almost whole with a double-hinged jaw. Its skull was dug from a Maastricht chalk quarry in the 1770s, decades before dinosaurs were even recognized as a group.',
+    facts: [
+      'Named for the Meuse river near Maastricht, Netherlands, where the first skull was found.',
+      'French Revolutionary forces seized the original fossil skull as war spoils in 1795.',
+      'Fossilized skin impressions show it swam with a shark-like tail fin, not a simple tapering tail.',
+    ],
+    color: '#3f5a68',
+    model: {
+      kind: 'marine',
+      bodyLength: 6, bodyRadius: 1.1, neckLength: 0.4, neckRadius: 0.55,
+      headSize: 1.8, tailLength: 6, legHeight: 1.0, legRadius: 0.22,
+      neckAngle: 0, features: { longSnout: true, tailFluke: true },
+    },
+    clade: 'marine-reptile',
+  },
+  {
+    id: 'plesiosaurus',
+    name: 'Plesiosaurus',
+    meaning: 'Near to reptile',
+    familyId: 'plesiosauridae',
+    silhouette: 'plesiosaur',
+    period: 'Early Jurassic · 201–194 Mya',
+    diet: 'Piscivore',
+    lengthM: 3.5,
+    heightM: 1.0,
+    weightKg: 450,
+    speedKmh: 10,
+    location: 'England',
+    description:
+      'Not a dinosaur — a marine reptile so odd that when Mary Anning unearthed the first complete skeleton in 1823, the French anatomist Georges Cuvier suspected a fraud. A tiny head sits atop a neck longer than the rest of its body, built from roughly 40 vertebrae, propelled by four broad flippers like an underwater flight.',
+    facts: [
+      'Discovered by pioneering fossil hunter Mary Anning at Lyme Regis, England, in 1823.',
+      'Its neck alone contains around 40 vertebrae — more than almost any other animal.',
+      'It likely "flew" underwater, flapping its four flippers like a penguin rather than paddling.',
+    ],
+    color: '#4f7a75',
+    model: {
+      kind: 'marine',
+      bodyLength: 1.8, bodyRadius: 0.55, neckLength: 2.0, neckRadius: 0.16,
+      headSize: 0.32, tailLength: 0.9, legHeight: 0.85, legRadius: 0.14,
+      neckAngle: 0.3,
+    },
+    clade: 'marine-reptile',
+  },
+  {
+    id: 'pteranodon',
+    name: 'Pteranodon',
+    meaning: 'Toothless wing',
+    familyId: 'pteranodontidae',
+    silhouette: 'ptero',
+    period: 'Late Cretaceous · 86–84 Mya',
+    diet: 'Piscivore',
+    lengthM: 2.5,
+    heightM: 0.8,
+    weightKg: 20,
+    speedKmh: 50,
+    location: 'North America',
+    description:
+      'Not a dinosaur — a pterosaur, a separate group of flying reptiles. Pteranodon patrolled the shores of the shallow sea that once split North America in two, snatching fish from the surface. Hollow, air-filled bones kept a six-meter wingspan light enough to fly, at the cost of almost never fossilizing intact.',
+    facts: [
+      'Named in 1876 by O. C. Marsh during the fiercely competitive "Bone Wars" of American paleontology.',
+      'Unlike earlier pterosaurs, it had no teeth at all — just a sharp beak.',
+      'Its backward-pointing crest may have acted as a rudder or a counterweight for its long beak.',
+    ],
+    color: '#8a7f6e',
+    model: {
+      kind: 'pterosaur',
+      bodyLength: 1.0, bodyRadius: 0.42, neckLength: 0.9, neckRadius: 0.16,
+      headSize: 1.1, tailLength: 0.25, legHeight: 0.5, legRadius: 0.05,
+      neckAngle: 0.35, wingSpan: 6.4, features: { bill: true, longSnout: true, crestBlade: true },
+    },
+    clade: 'pterosaur',
+    wingSpanM: 6.4,
+  },
+  {
+    id: 'quetzalcoatlus',
+    name: 'Quetzalcoatlus',
+    meaning: 'Named for the Aztec feathered serpent god Quetzalcoatl',
+    familyId: 'azhdarchidae',
+    silhouette: 'ptero',
+    period: 'Late Cretaceous · 70–66 Mya',
+    diet: 'Carnivore',
+    lengthM: 3,
+    heightM: 3,
+    weightKg: 250,
+    speedKmh: 60,
+    location: 'USA (Texas)',
+    description:
+      'Not a dinosaur — the largest flying animal ever known, a pterosaur with a wingspan longer than a city bus. Standing on all fours, it stood as tall as a giraffe at the shoulder, and current research suggests it spent much of its life stalking small prey on the ground, more giant stork than glider. It lived right up until the asteroid, alongside the very last dinosaurs.',
+    facts: [
+      'Its wingspan is estimated at 10–11 meters — comparable to a small airplane.',
+      'Discovered in Big Bend, Texas, in 1971, and named after the Aztec feathered serpent god.',
+      'Despite its size, it likely weighed only around 250 kg thanks to hollow, air-filled bones.',
+    ],
+    color: '#8a8477',
+    model: {
+      kind: 'pterosaur',
+      bodyLength: 1.3, bodyRadius: 0.5, neckLength: 2.6, neckRadius: 0.22,
+      headSize: 0.95, tailLength: 0.2, legHeight: 1.7, legRadius: 0.13,
+      neckAngle: 0.25, wingSpan: 10.5, features: { bill: true, longSnout: true },
+    },
+    clade: 'pterosaur',
+    wingSpanM: 10.5,
   },
 ]
 

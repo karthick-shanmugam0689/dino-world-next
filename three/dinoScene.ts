@@ -74,7 +74,8 @@ export function createDinoScene(
   const dino = new THREE.Group()
   scene.add(dino)
 
-  const hipY = c.legHeight + c.bodyRadius * 0.45
+  // marine reptiles rest low, belly near the ground, rather than standing on legs
+  const hipY = c.kind === 'marine' ? c.bodyRadius * 1.05 : c.legHeight + c.bodyRadius * 0.45
 
   // brachiosaurids stand on longer front legs, lifting the shoulders and neck base
   const backLegH = c.legHeight + c.bodyRadius * 0.3
@@ -163,10 +164,32 @@ export function createDinoScene(
     dino.add(pivot)
   }
 
+  // flippers — marine reptiles: flat paddles projecting sideways instead of legs
+  const flipperGroups: THREE.Group[] = []
+  const addFlipper = (x: number, side: 1 | -1, pivotY: number, length: number, radius: number, phase: number) => {
+    const pivot = new THREE.Group()
+    pivot.position.set(x, pivotY, side * c.bodyRadius * 0.7)
+    const paddle = mesh(new THREE.BoxGeometry(radius * 2.2, radius * 0.8, length), skin)
+    paddle.position.z = side * length * 0.5
+    pivot.add(paddle)
+    // droop the paddle downward at the tip; `side` compensates so both flippers droop the same way
+    pivot.rotation.x = side * 0.35
+    pivot.userData.phase = phase
+    flipperGroups.push(pivot)
+    dino.add(pivot)
+  }
+
   const legZ = c.bodyRadius * (armored ? 0.8 : 0.55)
-  if (c.kind === 'theropod') {
+  if (c.kind === 'theropod' || c.kind === 'pterosaur') {
     addLeg(-c.bodyLength * 0.12, legZ, hipY, backLegH, c.legRadius, 0)
     addLeg(-c.bodyLength * 0.12, -legZ, hipY, backLegH, c.legRadius, Math.PI)
+  } else if (c.kind === 'marine') {
+    const frontLen = c.legHeight
+    const rearLen = c.legHeight * 0.65
+    addFlipper(c.bodyLength * 0.26, 1, hipY, frontLen, c.legRadius, 0)
+    addFlipper(c.bodyLength * 0.26, -1, hipY, frontLen, c.legRadius, Math.PI)
+    addFlipper(-c.bodyLength * 0.28, 1, hipY, rearLen, c.legRadius * 0.85, Math.PI)
+    addFlipper(-c.bodyLength * 0.28, -1, hipY, rearLen, c.legRadius * 0.85, 0)
   } else {
     const frontX = c.bodyLength * 0.3
     // front legs are longer and pivot from the raised shoulder so feet still reach the ground
@@ -198,10 +221,21 @@ export function createDinoScene(
       const fore = mesh(new THREE.CylinderGeometry(ra * 0.8, ra * 0.6, fa, 6), skin)
       fore.position.y = -fa / 2
       elbow.add(fore)
-      const hand = mesh(new THREE.BoxGeometry(ra * 1.2, ra * 2.4, ra * 1.1), skinDark)
-      hand.position.y = -fa - ra * 0.8
-      hand.rotation.z = -0.35
-      elbow.add(hand)
+      if (c.features?.giantClaws) {
+        // therizinosaurs: three huge sickle claws fanning from the wrist instead of a small hand
+        const clawLen = ua * 1.15
+        for (const spread of [-0.32, 0, 0.32]) {
+          const claw = mesh(new THREE.ConeGeometry(ra * 0.5, clawLen, 6), skinDark)
+          claw.position.set(0, -fa - ra * 0.4, 0)
+          claw.rotation.z = -0.85 + spread
+          elbow.add(claw)
+        }
+      } else {
+        const hand = mesh(new THREE.BoxGeometry(ra * 1.2, ra * 2.4, ra * 1.1), skinDark)
+        hand.position.y = -fa - ra * 0.8
+        hand.rotation.z = -0.35
+        elbow.add(hand)
+      }
       shoulder.add(elbow)
       shoulder.rotation.z = -0.35
       shoulder.rotation.x = side * -0.12
@@ -244,6 +278,19 @@ export function createDinoScene(
       club.scale.set(1.3, 0.75, 1.45)
       club.position.x = -segLen
       parent.add(club)
+    }
+    if (c.features?.tailFluke) {
+      // shark-like vertical fin: two flattened triangular lobes at the tail tip
+      const flukeSize = c.bodyRadius * 0.9
+      const upperLobe = mesh(new THREE.ConeGeometry(flukeSize * 0.55, flukeSize * 1.3, 4), skinDark)
+      upperLobe.scale.z = 0.12
+      upperLobe.position.set(-segLen * 0.4, flukeSize * 0.5, 0)
+      parent.add(upperLobe)
+      const lowerLobe = mesh(new THREE.ConeGeometry(flukeSize * 0.4, flukeSize * 0.9, 4), skinDark)
+      lowerLobe.scale.z = 0.12
+      lowerLobe.rotation.z = Math.PI
+      lowerLobe.position.set(-segLen * 0.4, -flukeSize * 0.35, 0)
+      parent.add(lowerLobe)
     }
     if (c.features?.plates || c.features?.spikedBack) {
       // thagomizer spikes on the last tail segment
@@ -363,6 +410,14 @@ export function createDinoScene(
       crest.rotation.z = -2.3
       head.add(crest)
     }
+    if (c.features?.crestBlade) {
+      // flat, backward-swept bony blade (Pteranodon)
+      const crest = mesh(new THREE.ConeGeometry(h * 0.5, h * 1.3, 3), skinDark)
+      crest.scale.z = 0.1
+      crest.position.set(-h * 0.4, h * 0.35, 0)
+      crest.rotation.z = -2.0
+      head.add(crest)
+    }
   }
 
   // back features
@@ -423,6 +478,47 @@ export function createDinoScene(
     dino.add(sail)
   }
 
+  // wings — pterosaurs: a bone spar plus a flat triangular membrane running from
+  // the wingtip back to the hip, spread wide so the wingspan reads clearly next
+  // to the human figure (the real headline stat for these animals).
+  const wingPivots: THREE.Group[] = []
+  if (c.kind === 'pterosaur') {
+    const wingLen = (c.wingSpan ?? c.bodyLength * 3) / 2
+    const shoulderX = c.bodyLength * 0.18
+    const shoulderY = hipY + c.bodyRadius * 0.45
+    const hipLocal = new THREE.Vector3(-c.bodyLength * 0.46, hipY - shoulderY, 0)
+    for (const side of [1, -1] as const) {
+      const shoulder = new THREE.Group()
+      shoulder.position.set(shoulderX, shoulderY, side * c.bodyRadius * 0.55)
+      const tip = new THREE.Vector3(-wingLen * 0.12, -wingLen * 0.16, side * wingLen)
+      const spar = mesh(new THREE.CylinderGeometry(c.legRadius * 0.5, c.legRadius * 0.85, wingLen, 6), skin)
+      spar.position.copy(tip).multiplyScalar(0.5)
+      // orient the cylinder (default +Y axis) to run from the shoulder to the tip
+      spar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tip.clone().normalize())
+      shoulder.add(spar)
+
+      const membraneGeo = new THREE.BufferGeometry()
+      const hip = new THREE.Vector3(hipLocal.x, hipLocal.y, side * c.bodyRadius * 0.4)
+      const positions = new Float32Array([0, 0, 0, tip.x, tip.y, tip.z, hip.x, hip.y, hip.z])
+      membraneGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+      membraneGeo.setIndex(side > 0 ? [0, 1, 2] : [0, 2, 1])
+      membraneGeo.computeVertexNormals()
+      const membraneMat = new THREE.MeshStandardMaterial({
+        color: skin.color.clone().multiplyScalar(0.9),
+        roughness: 0.7,
+        flatShading: true,
+        side: THREE.DoubleSide,
+      })
+      disposables.push(membraneMat)
+      const membrane = mesh(membraneGeo, membraneMat)
+      shoulder.add(membrane)
+
+      shoulder.userData.side = side
+      wingPivots.push(shoulder)
+      dino.add(shoulder)
+    }
+  }
+
   // rest pose for the neck. A steep neck (brachiosaurid) kicks up almost all its
   // angle at the base then runs straight, giraffe-like; otherwise the pitch is
   // spread evenly for a gentle curve.
@@ -455,8 +551,13 @@ export function createDinoScene(
       human.add(arm)
     }
   }
-  const dinoHalfLen = (c.bodyLength + c.tailLength + c.neckLength) / 2
-  human.position.set(Math.max(2.2, c.bodyLength * 0.55 + 1.2), 0, Math.max(1.6, c.bodyRadius + 1.0))
+  const wingReach = c.kind === 'pterosaur' ? (c.wingSpan ?? c.bodyLength * 3) / 2 : 0
+  const dinoHalfLen = Math.max((c.bodyLength + c.tailLength + c.neckLength) / 2, wingReach)
+  let humanX = Math.max(2.2, c.bodyLength * 0.55 + 1.2)
+  let humanZ = Math.max(1.6, c.bodyRadius + 1.0)
+  if (c.kind === 'pterosaur') humanZ = Math.max(humanZ, wingReach + 1.3)
+  if (c.kind === 'marine') humanX = Math.max(humanX, c.bodyLength * 0.5 + c.legHeight + 1.4)
+  human.position.set(humanX, 0, humanZ)
   scene.add(human)
 
   // --- camera framing -------------------------------------------------------
@@ -465,7 +566,12 @@ export function createDinoScene(
   const size = box.getSize(new THREE.Vector3())
   const center = box.getCenter(new THREE.Vector3())
   const radius = Math.max(size.x, size.y * 1.6, size.z) * 0.62 + 1.5
-  const camDir = new THREE.Vector3(0.55, 0.32, 1).normalize()
+  // pterosaurs spread their wingspan along Z; view from more head-on so it reads
+  // across the screen instead of receding toward/away from the camera
+  const camDir =
+    c.kind === 'pterosaur'
+      ? new THREE.Vector3(0.95, 0.3, 0.5).normalize()
+      : new THREE.Vector3(0.55, 0.32, 1).normalize()
   camera.position.copy(center).addScaledVector(camDir, radius * 2.35)
   camera.lookAt(center.x, center.y * 0.9, center.z)
   sun.position.copy(center).add(new THREE.Vector3(-radius, radius * 2.2, radius * 1.4))
@@ -536,6 +642,17 @@ export function createDinoScene(
     tailSegs.forEach((seg, i) => {
       seg.rotation.y = Math.sin(t * 1.2 + i * 0.55) * 0.075
     })
+
+    // flippers paddle gently side to side
+    for (const flip of flipperGroups) {
+      flip.rotation.y = Math.sin(t * 1.4 + (flip.userData.phase as number)) * 0.12
+    }
+
+    // wings hold their spread pose with a slow, gentle flap
+    for (const wing of wingPivots) {
+      const side = wing.userData.side as number
+      wing.rotation.x = side * Math.sin(t * 1.1) * 0.14
+    }
 
     // neck follows the pointer
     pointer.yaw += (pointer.targetYaw - pointer.yaw) * 0.07

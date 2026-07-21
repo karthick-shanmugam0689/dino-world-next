@@ -17,16 +17,23 @@ const DinoCanvas = dynamic(() => import('./DinoCanvas').then((m) => m.DinoCanvas
   ),
 })
 
-const MAX = { lengthM: 25, heightM: 13, weightKg: 40000, speedKmh: 60 }
+type StatKey = 'lengthM' | 'heightM' | 'weightKg' | 'speedKmh' | 'wingSpanM'
+const MAX: Record<StatKey, number> = { lengthM: 25, heightM: 13, weightKg: 40000, speedKmh: 60, wingSpanM: 12 }
 
-const stats: Array<{ key: keyof typeof MAX; label: string; unit: string }> = [
-  { key: 'lengthM', label: 'Length', unit: 'm' },
-  { key: 'heightM', label: 'Height', unit: 'm' },
-  { key: 'weightKg', label: 'Weight', unit: 'kg' },
-  { key: 'speedKmh', label: 'Top speed', unit: 'km/h' },
-]
+const CLADE_LABEL: Record<NonNullable<Dino['clade']>, string> = {
+  'marine-reptile': 'marine reptile',
+  pterosaur: 'pterosaur',
+}
 
 export function DinoDetailView({ dino, family }: { dino: Dino; family: Family }) {
+  const stats: Array<{ key: StatKey; label: string; unit: string }> = [
+    { key: 'lengthM', label: 'Length', unit: 'm' },
+    ...(dino.wingSpanM ? [{ key: 'wingSpanM' as const, label: 'Wingspan', unit: 'm' }] : []),
+    { key: 'heightM', label: 'Height', unit: 'm' },
+    { key: 'weightKg', label: 'Weight', unit: 'kg' },
+    { key: 'speedKmh', label: 'Top speed', unit: 'km/h' },
+  ]
+
   return (
     <main className="page detail-page" key={dino.id}>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
@@ -53,6 +60,7 @@ export function DinoDetailView({ dino, family }: { dino: Dino; family: Family })
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55 }}
           >
+            {dino.clade && <p className="not-dino-badge">Not a dinosaur — {CLADE_LABEL[dino.clade]}</p>}
             <p className="detail-meaning">"{dino.meaning}"</p>
             <h1 style={{ color: dino.color }}>{dino.name}</h1>
             <div className="chips">
@@ -75,7 +83,7 @@ export function DinoDetailView({ dino, family }: { dino: Dino; family: Family })
 
           <div className="stat-list">
             {stats.map((s, i) => {
-              const value = dino[s.key]
+              const value = dino[s.key] as number
               return (
                 <motion.div
                   className="stat-row"
