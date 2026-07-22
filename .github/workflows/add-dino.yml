@@ -21,6 +21,7 @@ run-name: "add-dino: ${{ inputs.dino_name }} [${{ inputs.request_id }}]"
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 concurrency:
   group: add-dino
