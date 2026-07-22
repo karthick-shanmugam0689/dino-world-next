@@ -18,7 +18,7 @@ export const dino: Dino = {
   id: "carcharodontosaurus",
   name: "Carcharodontosaurus",
   meaning: "Shark-toothed lizard",
-  familyId: "allosauridae",
+  familyId: "carcharodontosauridae",
   silhouette: "trex",
   period: "Late Cretaceous · 100–94 Mya",
   diet: "Carnivore",
