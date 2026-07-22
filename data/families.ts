@@ -106,6 +106,14 @@ export const families: Family[] = [
     traits: ['True theropod dinosaur', 'Longest claws of any known animal', 'Herbivorous despite predator ancestry', 'Feathered body'],
   },
   {
+    id: 'titanosauridae',
+    name: 'Titanosauridae',
+    description:
+      'The last of the great long-necks — wide-bodied, thick-limbed sauropods that outlasted every other giant to rule the plant-eating niches right up to the end of the Cretaceous. Many carried bony armor plates in their skin, and the group as a whole includes the largest animals ever to walk the Earth. It takes its name from Titanosaurus, the first of the group ever described.',
+    period: 'Late Cretaceous',
+    traits: ['Wide-bodied heavy sauropods', 'Bony skin armor (osteoderms)', 'Survived to the very end of the Cretaceous', 'Include the largest land animals ever'],
+  },
+  {
     id: 'mosasauridae',
     name: 'Mosasauridae',
     description:
