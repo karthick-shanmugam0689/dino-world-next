@@ -13,11 +13,6 @@ function stepConclusion(job: { steps: { name: string; conclusion: string | null 
 }
 
 export async function GET(request: Request) {
-  const secret = request.headers.get('x-admin-secret')
-  if (!secret || secret !== process.env.ADMIN_TRIGGER_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   const requestId = new URL(request.url).searchParams.get('requestId')
   if (!requestId) {
     return NextResponse.json({ error: 'requestId is required' }, { status: 400 })
@@ -35,7 +30,6 @@ export async function GET(request: Request) {
     return NextResponse.json({
       phase: 'running',
       stepName: current?.name ?? 'Getting started…',
-      runUrl: run.html_url,
     })
   }
 
@@ -44,7 +38,6 @@ export async function GET(request: Request) {
       phase: 'done',
       outcome: 'duplicate',
       message: 'Failed — the dino is already there.',
-      runUrl: run.html_url,
     })
   }
 
@@ -53,7 +46,6 @@ export async function GET(request: Request) {
       phase: 'done',
       outcome: 'unverifiable',
       message: "Failed — this dino doesn't exist in my brain.",
-      runUrl: run.html_url,
     })
   }
 
@@ -64,14 +56,12 @@ export async function GET(request: Request) {
       outcome: 'success',
       message: 'Succeeded — Karthick is notified!',
       prUrl,
-      runUrl: run.html_url,
     })
   }
 
   return NextResponse.json({
     phase: 'done',
     outcome: 'failed',
-    message: 'Failed — something broke on my end. Check the Actions log.',
-    runUrl: run.html_url,
+    message: 'Failed — something broke on my end.',
   })
 }

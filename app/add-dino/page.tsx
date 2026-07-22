@@ -4,33 +4,26 @@ import { useEffect, useRef, useState } from 'react'
 
 type Status =
   | { phase: 'idle' }
-  | { phase: 'searching' | 'running'; stepName: string; runUrl?: string }
-  | { phase: 'done'; outcome: string; message: string; prUrl?: string | null; runUrl?: string }
+  | { phase: 'searching' | 'running'; stepName: string }
+  | { phase: 'done'; outcome: string; message: string; prUrl?: string | null }
   | { phase: 'error'; message: string }
 
-const SECRET_KEY = 'dinoverse-admin-secret'
-
-export default function AddDinoAdminPage() {
-  const [secret, setSecret] = useState('')
+export default function AddDinoPage() {
   const [dinoName, setDinoName] = useState('')
   const [status, setStatus] = useState<Status>({ phase: 'idle' })
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
-    const saved = sessionStorage.getItem(SECRET_KEY)
-    if (saved) setSecret(saved)
     return () => {
       if (pollRef.current) clearInterval(pollRef.current)
     }
   }, [])
 
-  const startPolling = (requestId: string, adminSecret: string) => {
+  const startPolling = (requestId: string) => {
     if (pollRef.current) clearInterval(pollRef.current)
     pollRef.current = setInterval(async () => {
       try {
-        const res = await fetch(`/api/add-dino/status?requestId=${requestId}`, {
-          headers: { 'x-admin-secret': adminSecret },
-        })
+        const res = await fetch(`/api/add-dino/status?requestId=${requestId}`)
         const data = await res.json()
         if (!res.ok) {
           setStatus({ phase: 'error', message: data.error ?? 'Something went wrong.' })
@@ -47,22 +40,21 @@ export default function AddDinoAdminPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!secret.trim() || !dinoName.trim()) return
-    sessionStorage.setItem(SECRET_KEY, secret)
+    if (!dinoName.trim()) return
     setStatus({ phase: 'searching', stepName: 'Sending the request…' })
 
     try {
       const res = await fetch('/api/add-dino', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dinoName: dinoName.trim() }),
       })
       const data = await res.json()
       if (!res.ok) {
-        setStatus({ phase: 'error', message: data.error ?? 'Failed to trigger the workflow.' })
+        setStatus({ phase: 'error', message: data.error ?? 'Failed to trigger the pipeline.' })
         return
       }
-      startPolling(data.requestId, secret)
+      startPolling(data.requestId)
     } catch (err) {
       setStatus({ phase: 'error', message: String(err) })
     }
@@ -79,22 +71,15 @@ export default function AddDinoAdminPage() {
     <main className="page" style={{ maxWidth: '38rem' }}>
       <h1>Add a dinosaur</h1>
       <p className="family-desc">
-        Admin-only. Submits a species to the add-dino pipeline, which researches it,
-        writes its data folder, verifies the build, and opens a PR — never deploys
-        or merges automatically.
+        Every entry in this field guide started the same way: someone typed a name into a
+        box exactly like this one. Do it below, and a tireless research assistant will dig
+        through the fossil record, cross-examine its own conclusions, and — only if the
+        animal turns out to be genuine — quietly draft the paperwork for review. It won&apos;t
+        invent a genus to please you, it won&apos;t add anything already in the collection
+        twice, and nothing it writes ever goes live without a human eye on it first.
       </p>
 
       <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1.5rem' }}>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-          <span className="stat-label">Admin secret</span>
-          <input
-            type="password"
-            value={secret}
-            onChange={(e) => setSecret(e.target.value)}
-            className="admin-input"
-            autoComplete="off"
-          />
-        </label>
         <label style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
           <span className="stat-label">Dinosaur name</span>
           <input
@@ -128,13 +113,6 @@ export default function AddDinoAdminPage() {
                 <p style={{ marginTop: '0.6rem' }}>
                   <a href={status.prUrl} target="_blank" rel="noopener noreferrer" className="family-link">
                     View the PR →
-                  </a>
-                </p>
-              )}
-              {status.runUrl && (
-                <p style={{ marginTop: '0.4rem' }}>
-                  <a href={status.runUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.85rem', color: 'var(--text-dim)' }}>
-                    View the Actions run
                   </a>
                 </p>
               )}
