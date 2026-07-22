@@ -106,6 +106,14 @@ export const families: Family[] = [
     traits: ['True theropod dinosaur', 'Longest claws of any known animal', 'Herbivorous despite predator ancestry', 'Feathered body'],
   },
   {
+    id: 'abelisauridae',
+    name: 'Abelisauridae',
+    description:
+      'The apex predators of the southern supercontinent Gondwana — stocky, short-snouted theropods with deep skulls often bearing horns or bony ridges, and forelimbs so reduced they were all but useless. As the great allosaurs faded, abelisaurids took over the top of the food chain across South America, Africa, Madagascar and India.',
+    period: 'Cretaceous',
+    traits: ['Gondwanan apex predators', 'Short, deep skulls', 'Horned or ridged heads', 'Vestigial forelimbs'],
+  },
+  {
     id: 'mosasauridae',
     name: 'Mosasauridae',
     description:
