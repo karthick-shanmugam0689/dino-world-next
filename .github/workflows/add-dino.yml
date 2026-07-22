@@ -161,6 +161,11 @@ jobs:
           REASON=$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.reason')
           BRANCH="add-dino/$ID"
 
+          # The claude-code-action step above rewrites the origin remote's auth
+          # for its own git identity (claude[bot]); reset it here to this job's
+          # own token so the push below is never dependent on that being valid.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+
           git config user.name "add-dino bot"
           git config user.email "actions@users.noreply.github.com"
           git checkout -b "$BRANCH"
