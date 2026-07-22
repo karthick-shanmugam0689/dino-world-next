@@ -42,6 +42,14 @@ export const families: Family[] = [
     traits: ['Longer front legs', 'Upright giraffe-like neck', 'Treetop browser', 'Among the largest land animals'],
   },
   {
+    id: 'cetiosauridae',
+    name: 'Cetiosauridae',
+    description:
+      'The "whale lizards" — early, heavily built sauropods of the Jurassic whose solid, un-hollowed bones were once mistaken for those of a great sea creature. Less specialised than the towering giants that followed, they carried long necks near the horizontal and were among the first truly enormous four-legged plant eaters to walk the northern continents.',
+    period: 'Middle–Late Jurassic',
+    traits: ['Primitive, heavily built sauropods', 'Solid, un-hollowed vertebrae', 'Long near-horizontal neck', 'Early giant browsers'],
+  },
+  {
     id: 'spinosauridae',
     name: 'Spinosauridae',
     description:
