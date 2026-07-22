@@ -45,24 +45,30 @@ jobs:
 
       - name: 🔎 Checking the archives
         id: check
+        env:
+          DINO_NAME: ${{ inputs.dino_name }}
         run: |
           set +e
-          OUT=$(npx tsx scripts/check-dino.ts "${{ inputs.dino_name }}")
+          OUT=$(npx tsx scripts/check-dino.ts "$DINO_NAME")
           set -e
           echo "status=$(echo "$OUT" | jq -r '.status // "error"')" >> "$GITHUB_OUTPUT"
           echo "json=$(echo "$OUT" | jq -c '.')" >> "$GITHUB_OUTPUT"
 
       - name: ❌ Already in the collection
         if: steps.check.outputs.status == 'duplicate'
+        env:
+          CHECK_JSON: ${{ steps.check.outputs.json }}
         run: |
-          echo "$(echo '${{ steps.check.outputs.json }}' | jq -r '.message')"
+          echo "$CHECK_JSON" | jq -r '.message'
 
       - name: 🖼️ Hunting for portraits
         id: photos
         if: steps.check.outputs.status == 'new'
+        env:
+          DINO_NAME: ${{ inputs.dino_name }}
         run: |
           set +e
-          OUT=$(npx tsx scripts/find-photos.ts "${{ inputs.dino_name }}")
+          OUT=$(npx tsx scripts/find-photos.ts "$DINO_NAME")
           set -e
           echo "json=$(echo "$OUT" | jq -c '.')" >> "$GITHUB_OUTPUT"
 
@@ -140,8 +146,10 @@ jobs:
 
       - name: ❌ Couldn't verify this one
         if: steps.check.outputs.status == 'new' && steps.verdict.outputs.legitimate != 'true'
+        env:
+          VERDICT_JSON: ${{ steps.verdict.outputs.json }}
         run: |
-          echo "$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.reason')"
+          echo "$VERDICT_JSON" | jq -r '.reason'
 
       - name: 🔧 Running the numbers
         id: build
@@ -155,10 +163,11 @@ jobs:
         if: steps.build.outcome == 'success'
         env:
           GH_TOKEN: ${{ github.token }}
+          VERDICT_JSON: ${{ steps.verdict.outputs.json }}
         run: |
-          ID=$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.id')
-          NAME=$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.name')
-          REASON=$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.reason')
+          ID=$(echo "$VERDICT_JSON" | jq -r '.id')
+          NAME=$(echo "$VERDICT_JSON" | jq -r '.name')
+          REASON=$(echo "$VERDICT_JSON" | jq -r '.reason')
           BRANCH="add-dino/$ID"
 
           # The claude-code-action step above rewrites the origin remote's auth
