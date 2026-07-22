@@ -1,0 +1,175 @@
+name: Add a dinosaur
+
+# Triggered only by the admin route (app/api/add-dino) via workflow_dispatch.
+# Never runs on push/PR — this is purely an on-demand content pipeline.
+on:
+  workflow_dispatch:
+    inputs:
+      dino_name:
+        description: 'Species name to add'
+        required: true
+        type: string
+      request_id:
+        description: 'Correlation id set by the trigger route, used only for status polling'
+        required: true
+        type: string
+
+# The run-name embeds request_id so the frontend can find this exact run
+# without needing any database — it just lists recent runs and matches on name.
+run-name: "add-dino: ${{ inputs.dino_name }} [${{ inputs.request_id }}]"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: add-dino
+  cancel-in-progress: false
+
+jobs:
+  add-dino:
+    runs-on: ubuntu-latest
+    # Hard cost ceiling: GitHub kills the job here, no matter what's happening.
+    timeout-minutes: 15
+    steps:
+      - name: 🦴 Waking up the dig site
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 📦 Sharpening the tools
+        run: npm ci
+
+      - name: 🔎 Checking the archives
+        id: check
+        run: |
+          set +e
+          OUT=$(npx tsx scripts/check-dino.ts "${{ inputs.dino_name }}")
+          set -e
+          echo "status=$(echo "$OUT" | jq -r '.status // "error"')" >> "$GITHUB_OUTPUT"
+          echo "json=$(echo "$OUT" | jq -c '.')" >> "$GITHUB_OUTPUT"
+
+      - name: ❌ Already in the collection
+        if: steps.check.outputs.status == 'duplicate'
+        run: |
+          echo "$(echo '${{ steps.check.outputs.json }}' | jq -r '.message')"
+
+      - name: 🖼️ Hunting for portraits
+        id: photos
+        if: steps.check.outputs.status == 'new'
+        run: |
+          set +e
+          OUT=$(npx tsx scripts/find-photos.ts "${{ inputs.dino_name }}")
+          set -e
+          echo "json=$(echo "$OUT" | jq -c '.')" >> "$GITHUB_OUTPUT"
+
+      - name: 🧠 Consulting the fossil record
+        id: agent
+        if: steps.check.outputs.status == 'new'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: |
+            --max-turns 15
+            --allowedTools "Read,Write"
+          prompt: |
+            You are adding one species, "${{ inputs.dino_name }}", to the DinoVerse
+            field guide. Read `.claude/skills/add-dino/SKILL.md` for full context
+            on the schema and conventions, then do ONLY its Steps 2, 3, 4 and 5:
+            research, classify (family/clade/kind/silhouette), and write the files.
+
+            Do NOT run any scripts or shell commands (Bash is unavailable to you
+            in this run) — everything you need has already been fetched:
+
+            Duplicate/legitimacy check output:
+            ${{ steps.check.outputs.json }}
+
+            Photo candidates:
+            ${{ steps.photos.outputs.json }}
+
+            Rules:
+            - If, using the wikipedia signal above plus your own knowledge, you are
+              NOT confident this is a genuine dinosaur/pterosaur/marine reptile,
+              do not write any data files. Instead write ONLY this file:
+              /tmp/add-dino-result.json = {"legitimate": false, "reason": "<why>"}
+              and stop.
+            - The five body-plan kinds are theropod, sauropod, quadruped, marine,
+              pterosaur — pick the closest fit and scale an existing similar
+              species' `model` numbers to this animal's real size. If none of the
+              five fit, treat that the same as "not legitimate for this pass" —
+              write legitimate:false with reason explaining a new kind is needed,
+              and stop.
+            - Follow the exact file shape in an existing folder, e.g.
+              data/dinos/tyrannosaurus/{index.ts,model.ts}, for your new
+              data/dinos/<id>/{index.ts,model.ts}.
+            - Reuse an existing SilhouetteKey (see data/types.ts) unless truly
+              nothing fits; only then hand-draw a new one in components/DinoIcon.tsx.
+            - Reuse an existing family id from the check output if it fits;
+              otherwise add ONE new entry to data/families.ts, matching the prose
+              style of its neighbours.
+            - Pick exactly one skeleton and one realistic photo candidate (only
+              CC0 / public domain / CC BY / CC BY-SA licenses are acceptable).
+            - When you are done and files are written, write
+              /tmp/add-dino-result.json = {
+                "legitimate": true,
+                "id": "<id>",
+                "name": "<display name>",
+                "newFamily": true|false,
+                "familyId": "<id>",
+                "reason": "<1-2 sentences a human reviewer should know>"
+              }
+            Do not attempt to verify, build, commit, or open a PR — later CI
+            steps handle that deterministically.
+
+      - name: 📋 Reading the verdict
+        id: verdict
+        if: steps.check.outputs.status == 'new'
+        run: |
+          if [ -f /tmp/add-dino-result.json ]; then
+            RESULT=$(cat /tmp/add-dino-result.json)
+          else
+            RESULT='{"legitimate": false, "reason": "The agent did not produce a result file."}'
+          fi
+          echo "legitimate=$(echo "$RESULT" | jq -r '.legitimate // false')" >> "$GITHUB_OUTPUT"
+          echo "json=$(echo "$RESULT" | jq -c '.')" >> "$GITHUB_OUTPUT"
+
+      - name: ❌ Couldn't verify this one
+        if: steps.check.outputs.status == 'new' && steps.verdict.outputs.legitimate != 'true'
+        run: |
+          echo "$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.reason')"
+
+      - name: 🔧 Running the numbers
+        id: build
+        if: steps.verdict.outputs.legitimate == 'true'
+        run: |
+          npx tsx scripts/generate-dino-index.ts
+          npx tsc --noEmit -p tsconfig.json
+          npm run build
+
+      - name: 📮 Filing the paperwork
+        if: steps.build.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ID=$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.id')
+          NAME=$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.name')
+          REASON=$(echo '${{ steps.verdict.outputs.json }}' | jq -r '.reason')
+          BRANCH="add-dino/$ID"
+
+          git config user.name "add-dino bot"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add "data/dinos/$ID" data/dinos/index.ts data/families.ts components/DinoIcon.tsx
+          git commit -m "Add $NAME to the field guide"
+          git push -u origin "$BRANCH"
+
+          gh pr create \
+            --title "Add $NAME" \
+            --body "$REASON
+
+          ---
+          🤖 Generated by the add-dino skill, triggered from the site." \
+            --head "$BRANCH" \
+            --base main
