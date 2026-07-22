@@ -3,14 +3,14 @@ import { model } from './model'
 
 export const photos: DinoPhotoSet = {
   skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Tameryraptor_%28holotype%2C_SNSB-BSPG_1922_X_46%29.png/960px-Tameryraptor_%28holotype%2C_SNSB-BSPG_1922_X_46%29.png",
-    "license": "CC BY 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Tameryraptor_(holotype,_SNSB-BSPG_1922_X_46).png"
-  },
-  realistic: {
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Carcharodontosaurus_saharicus_skull_reconstruction.png/960px-Carcharodontosaurus_saharicus_skull_reconstruction.png",
     "license": "CC BY-SA 4.0",
     "source": "https://commons.wikimedia.org/wiki/File:Carcharodontosaurus_saharicus_skull_reconstruction.png"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Carcharodontosaurus_TD.png/960px-Carcharodontosaurus_TD.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Carcharodontosaurus_TD.png"
   },
 }
 
