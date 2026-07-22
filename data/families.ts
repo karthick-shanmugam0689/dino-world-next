@@ -137,4 +137,12 @@ export const families: Family[] = [
     period: 'Late Cretaceous',
     traits: ['Not a dinosaur — pterosaur', 'Largest known flying animals', 'Extremely long neck', 'Stalked prey on the ground'],
   },
+  {
+    id: 'compsognathidae',
+    name: 'Compsognathidae',
+    description:
+      'Among the smallest dinosaurs of all — lightly built, chicken-sized coelurosaurs that scurried through the Jurassic and Cretaceous underbrush chasing insects, lizards and anything else small enough to swallow. Their bird-like build made them key evidence in the dinosaur origin of birds.',
+    period: 'Late Jurassic',
+    traits: ['Tiny, lightly built hunters', 'Long legs for fast running', 'Insect and small-vertebrate eaters', 'Close to the origin of birds'],
+  },
 ]
