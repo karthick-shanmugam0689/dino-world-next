@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { periods, getPeriod, getPeriodMembers } from '../../../data/dinosaurs'
+import { periods } from '../../../data/periods'
+import { getPeriod, getPeriodMembers } from '../../../data/helpers'
 import { PeriodPageView } from '../../../components/PeriodPageView'
 
 export function generateStaticParams() {

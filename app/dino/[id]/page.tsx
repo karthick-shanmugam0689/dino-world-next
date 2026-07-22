@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { dinosaurs, getDino, getFamily } from '../../../data/dinosaurs'
-import { dinoPhotos } from '../../../data/dinoPhotos'
+import { dinosaurs, dinoPhotos } from '../../../data/dinos'
+import { getDino, getFamily } from '../../../data/helpers'
 import { DinoDetailView } from '../../../components/DinoDetailView'
 
 export function generateStaticParams() {

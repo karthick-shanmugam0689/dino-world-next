@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import type { Dino } from '../data/dinosaurs'
-import { dinoPhotos } from '../data/dinoPhotos'
+import type { Dino } from '../data/types'
+import { dinoPhotos } from '../data/dinos'
 import { createDinoScene } from '../three/dinoScene'
 import { DinoIcon } from './DinoIcon'
 

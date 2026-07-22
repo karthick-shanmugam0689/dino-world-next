@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { searchAll } from '../data/dinosaurs'
+import { searchAll } from '../data/helpers'
 import { DinoIcon } from './DinoIcon'
 
 export function Header() {

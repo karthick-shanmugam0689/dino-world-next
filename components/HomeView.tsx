@@ -3,7 +3,8 @@
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { featuredDinos, getDino, getFamily, periods } from '../data/dinosaurs'
+import { featuredDinos, getDino, getFamily } from '../data/helpers'
+import { periods } from '../data/periods'
 import { DinoIcon } from './DinoIcon'
 
 export function HomeView() {

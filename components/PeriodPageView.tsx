@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import type { Dino, Period } from '../data/dinosaurs'
-import { getFamily, periods } from '../data/dinosaurs'
+import type { Dino, Period } from '../data/types'
+import { getFamily } from '../data/helpers'
+import { periods } from '../data/periods'
 import { DinoIcon } from './DinoIcon'
 
 export function PeriodPageView({ period, members }: { period: Period; members: Dino[] }) {

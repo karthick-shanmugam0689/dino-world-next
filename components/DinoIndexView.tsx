@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { dinosaurs, getFamily } from '../data/dinosaurs'
+import { dinosaurs } from '../data/dinos'
+import { getFamily } from '../data/helpers'
 import { DinoIcon } from './DinoIcon'
 
 const sorted = [...dinosaurs].sort((a, b) => a.name.localeCompare(b.name))

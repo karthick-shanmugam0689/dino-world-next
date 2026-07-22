@@ -3,8 +3,8 @@
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
-import type { Dino, Family } from '../data/dinosaurs'
-import { getPeriodId } from '../data/dinosaurs'
+import type { Dino, Family } from '../data/types'
+import { getPeriodId } from '../data/helpers'
 
 // Code-split three.js out of the page's initial bundle: the WebGL scene only
 // loads once this Client Component mounts, keeping it off the critical path.

@@ -1,4 +1,4 @@
-import type { SilhouetteKey } from '../data/dinosaurs'
+import type { SilhouetteKey } from '../data/types'
 
 interface Props {
   kind: SilhouetteKey

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import type { DinoModelConfig } from '../data/dinosaurs'
+import type { DinoModelConfig } from '../data/types'
 
 export interface DinoSceneHandle {
   dispose(): void

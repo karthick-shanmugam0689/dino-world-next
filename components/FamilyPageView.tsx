@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import type { Dino, Family } from '../data/dinosaurs'
+import type { Dino, Family } from '../data/types'
 import { DinoIcon } from './DinoIcon'
 
 export function FamilyPageView({ family, members }: { family: Family; members: Dino[] }) {

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { families, getFamily, getFamilyMembers } from '../../../data/dinosaurs'
+import { families } from '../../../data/families'
+import { getFamily, getFamilyMembers } from '../../../data/helpers'
 import { FamilyPageView } from '../../../components/FamilyPageView'
 
 export function generateStaticParams() {
