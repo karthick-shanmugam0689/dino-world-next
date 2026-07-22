@@ -180,7 +180,13 @@ jobs:
           git checkout -b "$BRANCH"
           git add "data/dinos/$ID" data/dinos/index.ts data/families.ts components/DinoIcon.tsx
           git commit -m "Add $NAME to the field guide"
-          git push -u origin "$BRANCH"
+
+          # This branch name is deterministic and owned entirely by this
+          # workflow (never hand-edited, never has more than one attempt in
+          # flight thanks to the concurrency group above) — if a prior run
+          # got this far but failed later (e.g. PR creation), --force is
+          # safe: it just overwrites that abandoned attempt with this one.
+          git push -u origin "$BRANCH" --force
 
           gh pr create \
             --title "Add $NAME" \
