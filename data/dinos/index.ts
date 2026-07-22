@@ -26,6 +26,7 @@ import { dino as mosasaurus, photos as mosasaurusPhotos } from './mosasaurus'
 import { dino as plesiosaurus, photos as plesiosaurusPhotos } from './plesiosaurus'
 import { dino as pteranodon, photos as pteranodonPhotos } from './pteranodon'
 import { dino as quetzalcoatlus, photos as quetzalcoatlusPhotos } from './quetzalcoatlus'
+import { dino as giganotosaurus, photos as giganotosaurusPhotos } from './giganotosaurus'
 
 export const dinosaurs: Dino[] = [
   tyrannosaurus,
@@ -55,6 +56,7 @@ export const dinosaurs: Dino[] = [
   plesiosaurus,
   pteranodon,
   quetzalcoatlus,
+  giganotosaurus,
 ]
 
 export const dinoPhotos: Record<string, DinoPhotoSet> = {
@@ -85,4 +87,5 @@ export const dinoPhotos: Record<string, DinoPhotoSet> = {
   plesiosaurus: plesiosaurusPhotos,
   pteranodon: pteranodonPhotos,
   quetzalcoatlus: quetzalcoatlusPhotos,
+  giganotosaurus: giganotosaurusPhotos,
 }

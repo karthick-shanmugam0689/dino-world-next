@@ -98,6 +98,14 @@ export const families: Family[] = [
     traits: ['Apex Jurassic predators', 'Hatchet-like skull', 'Strong three-fingered arms', 'Hunted giants'],
   },
   {
+    id: 'carcharodontosauridae',
+    name: 'Carcharodontosauridae',
+    description:
+      'The "shark-toothed lizards" — colossal allosauroid predators that grew as large as, or larger than, T. rex. Long, low skulls carried blade-like serrated teeth built for slicing rather than crushing, and for a time they were the apex hunters of the southern continents, taking on the giant sauropods they lived alongside.',
+    period: 'Cretaceous',
+    traits: ['Shark-like serrated teeth', 'Rivalled T. rex in size', 'Long, low skulls', 'Hunted giant sauropods'],
+  },
+  {
     id: 'therizinosauridae',
     name: 'Therizinosauridae',
     description:
