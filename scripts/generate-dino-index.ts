@@ -9,11 +9,13 @@
  * reshuffles); brand-new folders are appended in alphabetical order.
  */
 import { readdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, join } from 'node:path'
 
-const DINOS_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'dinos')
+const DATA_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'data')
+const DINOS_DIR = join(DATA_DIR, 'dinos')
 const INDEX_FILE = join(DINOS_DIR, 'index.ts')
+const FAMILIES_FILE = join(DATA_DIR, 'families.ts')
 
 // every subfolder that actually contains an index.ts is a species
 const folderIds = readdirSync(DINOS_DIR, { withFileTypes: true })
@@ -55,3 +57,21 @@ const out =
 
 writeFileSync(INDEX_FILE, out)
 console.log(`Regenerated ${INDEX_FILE} with ${ordered.length} dinosaurs.`)
+
+// Cross-check every dino's familyId against data/families.ts. A dangling id
+// compiles fine (page.tsx's getFamily(...)! is a type-only assertion) but
+// crashes the dino detail page at runtime — catch it here, deterministically,
+// with a clear message instead of a cryptic prerender TypeError.
+;(async () => {
+  const { dinosaurs } = await import(pathToFileURL(INDEX_FILE).href)
+  const { families } = await import(pathToFileURL(FAMILIES_FILE).href)
+  const familyIds = new Set(families.map((f: { id: string }) => f.id))
+  const orphaned = dinosaurs.filter((d: { familyId: string }) => !familyIds.has(d.familyId))
+  if (orphaned.length > 0) {
+    console.error('Data integrity error: familyId does not match any entry in data/families.ts:')
+    for (const d of orphaned as { id: string; familyId: string }[]) {
+      console.error(`  - ${d.id}: familyId "${d.familyId}"`)
+    }
+    process.exit(1)
+  }
+})()

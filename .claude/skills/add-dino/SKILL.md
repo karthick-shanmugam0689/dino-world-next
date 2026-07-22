@@ -45,7 +45,12 @@ Decide, and briefly state your reasoning for each:
 1. **Family** — reuse an id from `existingFamilies` if it fits; otherwise define
    a new `Family` in `data/families.ts` (id = lowercase family name, e.g.
    `compsognathidae`). Keep the description/traits style consistent with
-   neighbours.
+   neighbours. **The `familyId` you write into the dino's `index.ts` must be
+   the exact same string as an id already in `existingFamilies`, or the id of
+   the family you just added** — a mismatch compiles fine but crashes the
+   page at runtime (`generate-dino-index.ts` now checks this and will fail
+   loudly if it doesn't match, so a slip won't reach a PR, but get it right
+   the first time).
 2. **Clade** — a true dinosaur leaves `clade` unset. A marine reptile →
    `clade: 'marine-reptile'`; a pterosaur → `clade: 'pterosaur'` (+ `wingSpanM`).
 3. **Body-plan `kind`** — pick from the FIVE existing kinds only:

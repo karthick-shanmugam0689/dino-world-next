@@ -117,7 +117,12 @@ jobs:
               nothing fits; only then hand-draw a new one in components/DinoIcon.tsx.
             - Reuse an existing family id from the check output if it fits;
               otherwise add ONE new entry to data/families.ts, matching the prose
-              style of its neighbours.
+              style of its neighbours. The familyId you write into the dino's
+              index.ts MUST be the exact same string as an id from the check
+              output, or the id of the family you just added — a mismatch
+              compiles fine but crashes the page at runtime. This is checked
+              deterministically after you finish (a mismatch fails the build
+              and blocks the PR), but get it right the first time.
             - Pick exactly one skeleton and one realistic photo candidate (only
               CC0 / public domain / CC BY / CC BY-SA licenses are acceptable).
             - When you are done and files are written, write
