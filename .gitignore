@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# add-dino workflow scratch file
+add-dino-result.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

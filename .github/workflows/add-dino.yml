@@ -82,7 +82,9 @@ jobs:
             research, classify (family/clade/kind/silhouette), and write the files.
 
             Do NOT run any scripts or shell commands (Bash is unavailable to you
-            in this run) — everything you need has already been fetched:
+            in this run) — everything you need has already been fetched. Your
+            Write tool is sandboxed to this checked-out repo directory, so the
+            result file below must be a relative path inside it, not /tmp:
 
             Duplicate/legitimacy check output:
             ${{ steps.check.outputs.json }}
@@ -94,7 +96,7 @@ jobs:
             - If, using the wikipedia signal above plus your own knowledge, you are
               NOT confident this is a genuine dinosaur/pterosaur/marine reptile,
               do not write any data files. Instead write ONLY this file:
-              /tmp/add-dino-result.json = {"legitimate": false, "reason": "<why>"}
+              add-dino-result.json = {"legitimate": false, "reason": "<why>"}
               and stop.
             - The five body-plan kinds are theropod, sauropod, quadruped, marine,
               pterosaur — pick the closest fit and scale an existing similar
@@ -113,7 +115,7 @@ jobs:
             - Pick exactly one skeleton and one realistic photo candidate (only
               CC0 / public domain / CC BY / CC BY-SA licenses are acceptable).
             - When you are done and files are written, write
-              /tmp/add-dino-result.json = {
+              add-dino-result.json = {
                 "legitimate": true,
                 "id": "<id>",
                 "name": "<display name>",
@@ -128,8 +130,8 @@ jobs:
         id: verdict
         if: steps.check.outputs.status == 'new'
         run: |
-          if [ -f /tmp/add-dino-result.json ]; then
-            RESULT=$(cat /tmp/add-dino-result.json)
+          if [ -f add-dino-result.json ]; then
+            RESULT=$(cat add-dino-result.json)
           else
             RESULT='{"legitimate": false, "reason": "The agent did not produce a result file."}'
           fi
