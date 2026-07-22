@@ -16,6 +16,33 @@ function authHeaders() {
   }
 }
 
+// Public-facing guardrails, since this route no longer sits behind an admin
+// secret. No new infrastructure — both checks just read the workflow's own
+// run history, which GitHub already tracks for free.
+const DAILY_RUN_LIMIT = 20 // ~$0.50-0.60 in agent tokens per run, so worst case ~$10-12/day
+
+export async function checkAddDinoQuota(): Promise<{ ok: true } | { ok: false; message: string }> {
+  const today = new Date().toISOString().slice(0, 10)
+  const res = await fetch(
+    `https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/${WORKFLOW_FILE}/runs` +
+      `?created=${encodeURIComponent('>=' + today)}&per_page=100`,
+    { headers: authHeaders() },
+  )
+  // Fail open on a transient GitHub API error — don't block real submissions
+  // over a flaky read that isn't the caller's fault.
+  if (!res.ok) return { ok: true }
+
+  const data = (await res.json()) as { total_count: number; workflow_runs: WorkflowRun[] }
+
+  if (data.workflow_runs.some((r) => r.status !== 'completed')) {
+    return { ok: false, message: 'Another dino is already being researched — try again in a few minutes.' }
+  }
+  if (data.total_count >= DAILY_RUN_LIMIT) {
+    return { ok: false, message: `Hit today's limit of ${DAILY_RUN_LIMIT} runs — try again tomorrow.` }
+  }
+  return { ok: true }
+}
+
 export async function dispatchAddDinoWorkflow(dinoName: string, requestId: string) {
   const res = await fetch(
     `https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/${WORKFLOW_FILE}/dispatches`,
