@@ -34,7 +34,8 @@ jobs:
       - name: 🦴 Waking up the dig site
         uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: 🪛 Setting up the tools
+        uses: actions/setup-node@v4
         with:
           node-version: 22
 
