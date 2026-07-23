@@ -247,6 +247,14 @@ export const searchIndex: SearchEntry[] = [
     "silhouette": "hadro"
   },
   {
+    "kind": "dino",
+    "id": "rajasaurus",
+    "name": "Rajasaurus",
+    "meaning": "Regal reptile (from Sanskrit \"raja\" meaning king/prince, and Greek \"sauros\" meaning lizard); the species name narmadensis refers to the Narmada River Valley",
+    "color": "#b5451d",
+    "silhouette": "trex"
+  },
+  {
     "kind": "family",
     "id": "tyrannosauridae",
     "name": "Tyrannosauridae"
@@ -335,6 +343,11 @@ export const searchIndex: SearchEntry[] = [
     "kind": "family",
     "id": "azhdarchidae",
     "name": "Azhdarchidae"
+  },
+  {
+    "kind": "family",
+    "id": "abelisauridae",
+    "name": "Abelisauridae"
   },
   {
     "kind": "period",

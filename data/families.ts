@@ -143,6 +143,14 @@ export const families = [
     period: 'Late Cretaceous',
     traits: ['Not a dinosaur — pterosaur', 'Largest known flying animals', 'Extremely long neck', 'Stalked prey on the ground'],
   },
+  {
+    id: 'abelisauridae',
+    name: 'Abelisauridae',
+    description:
+      'A family of small-armed, carnivorous theropods that thrived across the Southern Hemisphere landmasses of Gondwana during the Cretaceous, typically bearing short, deep, ornamented skulls.',
+    period: 'cretaceous',
+    traits: ["short deep skull","tiny vestigial arms","rough or horned skull ornamentation","stocky hind limbs"],
+  },
 ] as const
 
 export type FamilyId = (typeof families)[number]['id']
