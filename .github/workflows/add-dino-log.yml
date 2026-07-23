@@ -1,0 +1,40 @@
+name: Add-dino audit log
+
+# Free visibility for attempts that never start the agent pipeline
+# (duplicates, invalid input, quota). Shows up in Actions with a clear run name.
+on:
+  workflow_dispatch:
+    inputs:
+      outcome:
+        description: 'duplicate | rejected | submitted'
+        required: true
+        type: string
+      dino_name:
+        description: 'What the visitor typed'
+        required: true
+        type: string
+      detail:
+        description: 'Optional extra context (existing id, reason, …)'
+        required: false
+        type: string
+        default: ''
+
+run-name: "add-dino ${{ inputs.outcome }}: ${{ inputs.dino_name }}"
+
+permissions:
+  contents: read
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Record
+        env:
+          OUTCOME: ${{ inputs.outcome }}
+          DINO_NAME: ${{ inputs.dino_name }}
+          DETAIL: ${{ inputs.detail }}
+        run: |
+          echo "outcome=$OUTCOME"
+          echo "dino_name=$DINO_NAME"
+          echo "detail=$DETAIL"
