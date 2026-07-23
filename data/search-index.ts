@@ -255,6 +255,14 @@ export const searchIndex: SearchEntry[] = [
     "silhouette": "trex"
   },
   {
+    "kind": "dino",
+    "id": "argentinosaurus",
+    "name": "Argentinosaurus",
+    "meaning": "Argentine lizard",
+    "color": "#6b8e5a",
+    "silhouette": "sauropod"
+  },
+  {
     "kind": "family",
     "id": "tyrannosauridae",
     "name": "Tyrannosauridae"
@@ -348,6 +356,11 @@ export const searchIndex: SearchEntry[] = [
     "kind": "family",
     "id": "abelisauridae",
     "name": "Abelisauridae"
+  },
+  {
+    "kind": "family",
+    "id": "titanosauridae",
+    "name": "Titanosauridae"
   },
   {
     "kind": "period",

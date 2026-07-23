@@ -30,6 +30,7 @@ import { dino as giganotosaurus } from './giganotosaurus'
 import { dino as carcharodontosaurus } from './carcharodontosaurus'
 import { dino as ouranosaurus } from './ouranosaurus'
 import { dino as rajasaurus } from './rajasaurus'
+import { dino as argentinosaurus } from './argentinosaurus'
 
 export const dinosaurs: Dino[] = [
   tyrannosaurus,
@@ -63,4 +64,5 @@ export const dinosaurs: Dino[] = [
   carcharodontosaurus,
   ouranosaurus,
   rajasaurus,
+  argentinosaurus,
 ]
