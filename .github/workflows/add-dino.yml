@@ -169,7 +169,6 @@ jobs:
         id: build
         if: steps.verdict.outputs.legitimate == 'true'
         run: |
-          npx tsx scripts/apply-new-family.ts
           npx tsx scripts/generate-dino-index.ts
           npx tsc --noEmit -p tsconfig.json
           npm run build
