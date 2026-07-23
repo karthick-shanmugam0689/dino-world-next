@@ -17,7 +17,8 @@ image URLs.
 | Wikipedia exists? | `scripts/check-dino.ts` | Hard-stop if no page (gibberish never reaches the model) |
 | Photos | `scripts/find-photos.ts` | Auto-selects licensed skeleton/realistic into `photos` |
 | File scaffold | `scripts/scaffold-dino.ts` | Creates `data/dinos/<id>/` with photos + TODO placeholders |
-| Classify + fill | **You (model)** | Family/clade/kind/silhouette + replace TODOs; retune `model.ts` |
+| Classify + fill | **You (model)** | Local: edit scaffold TS. CI: write `add-dino-fill.json` only |
+| Apply fill (CI) | `scripts/apply-dino-fill.ts` | Merges JSON onto scaffold; keeps photos |
 | Index + build + PR | CI / you locally | `generate-dino-index.ts`, `tsc`, `build`, PR |
 
 ## Local workflow
@@ -36,52 +37,22 @@ npx tsc --noEmit -p tsconfig.json && npm run build
 
 ## CI workflow (site “Add dino”)
 
-Scripts already ran. Folder `data/dinos/<id>/` already exists with photos filled
-and `TODO_*` placeholders. Your job:
+Scripts already ran (`check-dino` → `find-photos` → `scaffold-dino`). Your CI job
+is **only** to write `add-dino-fill.json` in the repo root (one Write). A later
+script applies it onto the scaffold and writes `add-dino-result.json`.
 
-1. Read `.claude/skills/add-dino/SKILL.md` (this file) once for conventions.
-2. Read the scaffolded `data/dinos/<id>/index.ts` and `model.ts`.
-3. Using the Wikipedia extract in the check JSON (and your knowledge), **edit**
-   those files — do not recreate them from scratch; **keep `photos` as-is**.
-4. Write `add-dino-result.json` (see below).
-5. Do **not** run scripts, build, commit, or open a PR.
+Do **not** edit TypeScript, read the skill for exploration, or run tools other
+than Write. Prefer the Wikipedia extract provided in the prompt.
 
-### Fill checklist (edit scaffold)
+### `add-dino-fill.json` shapes
 
-Replace every `TODO_*` and fix defaults that are wrong:
-
-- `meaning`, `description` (2–3 sentences), `facts` (2–3 real facts)
-- `diet`, `location`, numeric stats (`lengthM`, `heightM`, `weightKg`, `speedKmh`; `wingSpanM` if pterosaur)
-- `periodId`: `triassic` | `jurassic` | `cretaceous`
-- `periodLabel`: display string, e.g. `"Late Cretaceous · 99–93 Mya"`
-- `familyId`: must be an id from `existingFamilies` in the check JSON, **or**
-  add one new family to `data/families.ts` (`as const` array) and use that id
-- `clade`: omit for true dinosaurs; `'marine-reptile'` or `'pterosaur'` otherwise
-- `silhouette`: existing `SilhouetteKey` from `data/types.ts` (new SVG only if nothing fits)
-- `color`: hex that fits the animal
-- `model.ts`: one of five kinds only — `theropod | sauropod | quadruped | marine | pterosaur`.
-  Copy numbers from the closest existing species, scaled to real size. Use existing
-  `features.*` flags only. **Do not** invent a new kind or edit `three/`.
-
-If you are not confident it is a genuine Mesozoic dinosaur / pterosaur / marine
-reptile, do not leave TODOs — write only:
-
+Reject:
 ```json
 {"legitimate": false, "reason": "<why>"}
 ```
 
-### Success result file
-
-```json
-{
-  "legitimate": true,
-  "id": "<id>",
-  "name": "<display name>",
-  "newFamily": true,
-  "familyId": "<id>",
-  "reason": "<1-2 sentences for the human reviewer, including photo note>"
-}
-```
+Accept: see the workflow prompt schema (`legitimate: true` + content + `model`).
+Keep `photos` alone — the apply script preserves scaffold photos.
 
 ## Stop conditions
 

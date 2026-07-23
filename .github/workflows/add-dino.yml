@@ -52,7 +52,18 @@ jobs:
           set -e
           echo "status=$(echo "$OUT" | jq -r '.status // "error"')" >> "$GITHUB_OUTPUT"
           echo "json=$(echo "$OUT" | jq -c '.')" >> "$GITHUB_OUTPUT"
-          # 0=new, 2=duplicate, 4=not_found are expected; anything else fails the job
+          echo "id=$(echo "$OUT" | jq -r '.candidateId // empty')" >> "$GITHUB_OUTPUT"
+          echo "input=$(echo "$OUT" | jq -r '.input // empty')" >> "$GITHUB_OUTPUT"
+          echo "wiki_title=$(echo "$OUT" | jq -r '.wikipedia.title // empty')" >> "$GITHUB_OUTPUT"
+          {
+            echo "wiki_description<<EOF"
+            echo "$OUT" | jq -r '.wikipedia.description // empty'
+            echo "EOF"
+            echo "wiki_extract<<EOF"
+            echo "$OUT" | jq -r '.wikipedia.extract // empty'
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+          echo "family_ids=$(echo "$OUT" | jq -c '[.existingFamilies[]?.id] // []')" >> "$GITHUB_OUTPUT"
           if [ "$CODE" -ne 0 ] && [ "$CODE" -ne 2 ] && [ "$CODE" -ne 4 ]; then
             echo "$OUT"
             exit "$CODE"
@@ -96,35 +107,76 @@ jobs:
       - name: 🧠 Consulting the fossil record
         id: agent
         if: steps.check.outputs.status == 'new'
+        continue-on-error: true
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          show_full_output: true
           claude_args: |
             --model sonnet
-            --max-turns 12
-            --allowedTools "Read,Edit,Write"
+            --max-turns 8
+            --allowedTools "Write"
           prompt: |
-            Fill in one scaffolded DinoVerse species. Read `.claude/skills/add-dino/SKILL.md`
-            (CI section) once, then edit the existing files — do not recreate them.
+            Write ONE file only: add-dino-fill.json in the repo root. No other tools.
+            Do not read files. Do not edit TypeScript. A script will apply your JSON.
 
-            Species id / check JSON:
-            ${{ steps.check.outputs.json }}
+            Species id: ${{ steps.check.outputs.id }}
+            Display name hint: ${{ steps.check.outputs.input }}
+            Wikipedia title: ${{ steps.check.outputs.wiki_title }}
+            Wikipedia description: ${{ steps.check.outputs.wiki_description }}
+            Wikipedia extract: ${{ steps.check.outputs.wiki_extract }}
+            Existing family ids (reuse one if it fits): ${{ steps.check.outputs.family_ids }}
+            Silhouette keys: trex, raptor, ceratops, stego, sauropod, spino, ankylo, hadro, mosasaur, plesiosaur, ptero, therizino
+            Model kinds (exactly one): theropod, sauropod, quadruped, marine, pterosaur
 
-            Photos already selected (do not invent URLs; keep photos on the dino as scaffolded):
-            ${{ steps.photos.outputs.json }}
+            If this is NOT a real Mesozoic dinosaur / pterosaur / marine reptile, write:
+            {"legitimate":false,"reason":"<why>"}
 
-            Tasks:
-            1. Edit `data/dinos/<candidateId>/index.ts` — replace every TODO_* and wrong defaults
-               (familyId, periodId, periodLabel, diet, stats, description, facts, silhouette, color, clade).
-            2. Edit `data/dinos/<candidateId>/model.ts` — set the correct kind (one of five) and
-               scale numbers from the closest existing species; use existing features.* only.
-            3. If you need a new family, add ONE entry to `data/families.ts` (keep `as const`).
-            4. New silhouette SVG in DinoIcon.tsx only if nothing existing fits.
-            5. Write `add-dino-result.json` as documented in the skill (legitimate true|false).
+            Otherwise write:
+            {
+              "legitimate": true,
+              "id": "<candidateId lowercase letters only>",
+              "name": "<display name>",
+              "meaning": "<name meaning>",
+              "familyId": "<existing id OR newFamily.id>",
+              "newFamily": null,
+              "periodId": "triassic|jurassic|cretaceous",
+              "periodLabel": "e.g. Early Cretaceous · 125–112 Mya",
+              "diet": "Carnivore|Herbivore|Piscivore",
+              "lengthM": 0,
+              "heightM": 0,
+              "weightKg": 0,
+              "speedKmh": 0,
+              "wingSpanM": null,
+              "location": "<where>",
+              "description": "<2-3 sentences from the extract + knowledge>",
+              "facts": ["<fact1>", "<fact2>"],
+              "silhouette": "<SilhouetteKey>",
+              "color": "#rrggbb",
+              "clade": null,
+              "model": {
+                "kind": "theropod|sauropod|quadruped|marine|pterosaur",
+                "bodyLength": 0, "bodyRadius": 0, "neckLength": 0, "neckRadius": 0,
+                "headSize": 0, "tailLength": 0, "legHeight": 0, "legRadius": 0,
+                "neckAngle": 0.4, "arms": "none|tiny|normal|long",
+                "features": {}
+              },
+              "reason": "<1-2 sentences for the human reviewer>"
+            }
 
-            Do not run shell/scripts/build/commit/PR. Prefer Wikipedia extract in the check JSON
-            over inventing facts. If not confident it is a real Mesozoic dinosaur/pterosaur/marine
-            reptile, write legitimate:false and stop.
+            Rules:
+            - Prefer an existing familyId. Only set newFamily to an object {id,name,description,period,traits[]} if none fit.
+            - clade: null for true dinosaurs; "marine-reptile" or "pterosaur" otherwise.
+            - Omit wingSpanM or set null unless pterosaur.
+            - Use features only from: plates, spikedBack, horns, frill, frillSpikes, sail, crest, bill, longSnout, sickle, clubTail, armor, steepNeck, tailFluke, crestBlade, giantClaws.
+            - Never invent image URLs. Photos are already on the scaffold.
+            - Finish in one Write call.
+
+      - name: 🧩 Applying the fill
+        id: apply
+        if: steps.check.outputs.status == 'new'
+        run: |
+          npx tsx scripts/apply-dino-fill.ts
 
       - name: 📋 Reading the verdict
         id: verdict
@@ -133,7 +185,7 @@ jobs:
           if [ -f add-dino-result.json ]; then
             RESULT=$(cat add-dino-result.json)
           else
-            RESULT='{"legitimate": false, "reason": "The agent did not produce a result file."}'
+            RESULT='{"legitimate": false, "reason": "No add-dino-result.json after apply step."}'
           fi
           echo "legitimate=$(echo "$RESULT" | jq -r '.legitimate // false')" >> "$GITHUB_OUTPUT"
           echo "json=$(echo "$RESULT" | jq -c '.')" >> "$GITHUB_OUTPUT"
