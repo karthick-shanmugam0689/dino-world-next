@@ -151,6 +151,14 @@ export const families = [
     period: 'cretaceous',
     traits: ["short deep skull","tiny vestigial arms","rough or horned skull ornamentation","stocky hind limbs"],
   },
+  {
+    id: 'titanosauridae',
+    name: 'Titanosauridae',
+    description:
+      'A globally distributed group of massive Cretaceous sauropods, ranging from modest-sized forms to the largest land animals known, many bearing bony armor plates in their skin.',
+    period: 'cretaceous',
+    traits: ["gigantic body size","wide-gauge limb stance","long whip-like tails","some species had osteoderm armor"],
+  },
 ] as const
 
 export type FamilyId = (typeof families)[number]['id']
