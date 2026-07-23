@@ -10,3 +10,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `'use client'` components must not import `data/dinos` or `data/helpers`.
 - Header search uses the generated slim `data/search-index.ts` only.
 - After adding/removing a species folder, run `npx tsx scripts/generate-dino-index.ts`.
+- Adding a species: follow `.claude/skills/add-dino/SKILL.md` (never invent image URLs).

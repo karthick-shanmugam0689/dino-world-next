@@ -5,6 +5,7 @@
 const OWNER = 'karthick-shanmugam0689'
 const REPO = 'dino-world-next'
 const WORKFLOW_FILE = 'add-dino.yml'
+const LOG_WORKFLOW_FILE = 'add-dino-log.yml'
 
 function authHeaders() {
   const token = process.env.GH_DISPATCH_TOKEN
@@ -57,6 +58,39 @@ export async function dispatchAddDinoWorkflow(dinoName: string, requestId: strin
   )
   if (!res.ok) {
     throw new Error(`Failed to dispatch workflow: ${res.status} ${await res.text()}`)
+  }
+}
+
+/**
+ * Fire-and-forget audit trail for Hobby-friendly visibility (GitHub Actions).
+ * Never throws — logging must not break the visitor flow.
+ */
+export async function logAddDinoAttempt(opts: {
+  outcome: 'duplicate' | 'rejected' | 'submitted'
+  dinoName: string
+  detail?: string
+}): Promise<void> {
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/${LOG_WORKFLOW_FILE}/dispatches`,
+      {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ref: 'main',
+          inputs: {
+            outcome: opts.outcome,
+            dino_name: opts.dinoName.slice(0, 80),
+            detail: (opts.detail ?? '').slice(0, 200),
+          },
+        }),
+      },
+    )
+    if (!res.ok) {
+      console.warn('add-dino audit log dispatch failed', res.status, await res.text())
+    }
+  } catch (err) {
+    console.warn('add-dino audit log dispatch error', err)
   }
 }
 
