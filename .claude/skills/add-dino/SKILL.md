@@ -79,14 +79,26 @@ exact shape of an existing folder (open `data/dinos/tyrannosaurus/` as the
 template). `model.ts` exports `model: DinoModelConfig`; `index.ts` exports
 `photos: DinoPhotoSet` and `dino: Dino` (spreading in `model`).
 
+If Step 3 decided a new family is needed, **don't hand-edit `data/families.ts`**
+— keeping it and the dino's own `familyId` in sync by hand has been an
+unreliable step in practice (a mismatch compiles fine but crashes the page at
+runtime). Instead write a temporary `add-dino-result.json` with just the
+`newFamily` field and run the script that applies it:
+
+```json
+{"newFamily": {"id": "<same id as familyId>", "name": "<Family name>", "description": "<1-3 sentences, matching neighbours' prose style>", "period": "<e.g. Late Cretaceous>", "traits": ["<short phrase>", "... (about 4)"]}}
+```
+
+```bash
+npx tsx scripts/apply-new-family.ts
+rm add-dino-result.json
+```
+
 Then regenerate the barrel — **never edit `data/dinos/index.ts` by hand**:
 
 ```bash
 npx tsx scripts/generate-dino-index.ts
 ```
-
-Add a new family to `data/families.ts` only if Step 3 decided so. If the period
-is one we already list, nothing else is needed; the dino shows up automatically.
 
 ## Step 6 — Verify (CAP: 2 fix attempts)
 
