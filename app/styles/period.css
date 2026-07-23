@@ -1,0 +1,34 @@
+/* ---------- period page ---------- */
+
+.period-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: -1rem 0 2rem;
+  flex-wrap: wrap;
+}
+
+.period-nav-item {
+  font-size: 0.85rem;
+  padding: 0.32rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.period-nav-item:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.period-nav-item.current {
+  font-weight: 600;
+}
+
+.period-count {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin: 0 0 2rem;
+}

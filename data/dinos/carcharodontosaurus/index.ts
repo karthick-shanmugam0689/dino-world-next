@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Carcharodontosaurus_saharicus_skull_reconstruction.png/960px-Carcharodontosaurus_saharicus_skull_reconstruction.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Carcharodontosaurus_saharicus_skull_reconstruction.png"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Carcharodontosaurus_TD.png/960px-Carcharodontosaurus_TD.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Carcharodontosaurus_TD.png"
-  },
-}
 
 export const dino: Dino = {
   id: "carcharodontosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Shark-toothed lizard",
   familyId: "carcharodontosauridae",
   silhouette: "trex",
-  period: "Late Cretaceous · 100–94 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 100–94 Mya",
   diet: "Carnivore",
   lengthM: 12.5,
   heightM: 4,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#a8632e",
   featured: false,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Carcharodontosaurus_saharicus_skull_reconstruction.png/960px-Carcharodontosaurus_saharicus_skull_reconstruction.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Carcharodontosaurus_saharicus_skull_reconstruction.png"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Carcharodontosaurus_TD.png/960px-Carcharodontosaurus_TD.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Carcharodontosaurus_TD.png"
+  },
+},
+
   model,
 }

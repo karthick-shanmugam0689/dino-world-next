@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Spinosaurus_skeleton.jpg/960px-Spinosaurus_skeleton.jpg",
-    "license": "CC BY 2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Spinosaurus_skeleton.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Spinosaurus_aegyptiacus_life_reconstruction.png/960px-Spinosaurus_aegyptiacus_life_reconstruction.png",
-    "license": "CC BY 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Spinosaurus_aegyptiacus_life_reconstruction.png"
-  },
-}
 
 export const dino: Dino = {
   id: "spinosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Spine lizard",
   familyId: "spinosauridae",
   silhouette: "spino",
-  period: "Late Cretaceous · 99–93 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 99–93 Mya",
   diet: "Piscivore",
   lengthM: 15,
   heightM: 4.4,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#4e7c99",
   featured: true,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Spinosaurus_skeleton.jpg/960px-Spinosaurus_skeleton.jpg",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Spinosaurus_skeleton.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Spinosaurus_aegyptiacus_life_reconstruction.png/960px-Spinosaurus_aegyptiacus_life_reconstruction.png",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Spinosaurus_aegyptiacus_life_reconstruction.png"
+  },
+},
+
   model,
 }

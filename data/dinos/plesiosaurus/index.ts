@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Plesiosaurus_dolichodeirus_NHM.jpg/960px-Plesiosaurus_dolichodeirus_NHM.jpg",
-    "license": "CC BY 2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Plesiosaurus_dolichodeirus_NHM.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/0/07/Plesiosaurus_dolichodeirus.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Plesiosaurus_dolichodeirus.png"
-  },
-}
 
 export const dino: Dino = {
   id: "plesiosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Near to reptile",
   familyId: "plesiosauridae",
   silhouette: "plesiosaur",
-  period: "Early Jurassic · 201–194 Mya",
+  periodId: "jurassic",
+  periodLabel: "Early Jurassic · 201–194 Mya",
   diet: "Piscivore",
   lengthM: 3.5,
   heightM: 1,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#4f7a75",
   clade: "marine-reptile",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Plesiosaurus_dolichodeirus_NHM.jpg/960px-Plesiosaurus_dolichodeirus_NHM.jpg",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Plesiosaurus_dolichodeirus_NHM.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/07/Plesiosaurus_dolichodeirus.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Plesiosaurus_dolichodeirus.png"
+  },
+},
+
   model,
 }

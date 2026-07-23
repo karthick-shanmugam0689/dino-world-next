@@ -1,33 +1,33 @@
-import type { Dino, DinoPhotoSet } from '../types'
-import { dino as tyrannosaurus, photos as tyrannosaurusPhotos } from './tyrannosaurus'
-import { dino as tarbosaurus, photos as tarbosaurusPhotos } from './tarbosaurus'
-import { dino as albertosaurus, photos as albertosaurusPhotos } from './albertosaurus'
-import { dino as velociraptor, photos as velociraptorPhotos } from './velociraptor'
-import { dino as deinonychus, photos as deinonychusPhotos } from './deinonychus'
-import { dino as utahraptor, photos as utahraptorPhotos } from './utahraptor'
-import { dino as triceratops, photos as triceratopsPhotos } from './triceratops'
-import { dino as styracosaurus, photos as styracosaurusPhotos } from './styracosaurus'
-import { dino as stegosaurus, photos as stegosaurusPhotos } from './stegosaurus'
-import { dino as kentrosaurus, photos as kentrosaurusPhotos } from './kentrosaurus'
-import { dino as brachiosaurus, photos as brachiosaurusPhotos } from './brachiosaurus'
-import { dino as giraffatitan, photos as giraffatitanPhotos } from './giraffatitan'
-import { dino as spinosaurus, photos as spinosaurusPhotos } from './spinosaurus'
-import { dino as baryonyx, photos as baryonyxPhotos } from './baryonyx'
-import { dino as ankylosaurus, photos as ankylosaurusPhotos } from './ankylosaurus'
-import { dino as euoplocephalus, photos as euoplocephalusPhotos } from './euoplocephalus'
-import { dino as parasaurolophus, photos as parasaurolophusPhotos } from './parasaurolophus'
-import { dino as edmontosaurus, photos as edmontosaurusPhotos } from './edmontosaurus'
-import { dino as coelophysis, photos as coelophysisPhotos } from './coelophysis'
-import { dino as plateosaurus, photos as plateosaurusPhotos } from './plateosaurus'
-import { dino as herrerasaurus, photos as herrerasaurusPhotos } from './herrerasaurus'
-import { dino as allosaurus, photos as allosaurusPhotos } from './allosaurus'
-import { dino as therizinosaurus, photos as therizinosaurusPhotos } from './therizinosaurus'
-import { dino as mosasaurus, photos as mosasaurusPhotos } from './mosasaurus'
-import { dino as plesiosaurus, photos as plesiosaurusPhotos } from './plesiosaurus'
-import { dino as pteranodon, photos as pteranodonPhotos } from './pteranodon'
-import { dino as quetzalcoatlus, photos as quetzalcoatlusPhotos } from './quetzalcoatlus'
-import { dino as giganotosaurus, photos as giganotosaurusPhotos } from './giganotosaurus'
-import { dino as carcharodontosaurus, photos as carcharodontosaurusPhotos } from './carcharodontosaurus'
+import type { Dino } from '../types'
+import { dino as tyrannosaurus } from './tyrannosaurus'
+import { dino as tarbosaurus } from './tarbosaurus'
+import { dino as albertosaurus } from './albertosaurus'
+import { dino as velociraptor } from './velociraptor'
+import { dino as deinonychus } from './deinonychus'
+import { dino as utahraptor } from './utahraptor'
+import { dino as triceratops } from './triceratops'
+import { dino as styracosaurus } from './styracosaurus'
+import { dino as stegosaurus } from './stegosaurus'
+import { dino as kentrosaurus } from './kentrosaurus'
+import { dino as brachiosaurus } from './brachiosaurus'
+import { dino as giraffatitan } from './giraffatitan'
+import { dino as spinosaurus } from './spinosaurus'
+import { dino as baryonyx } from './baryonyx'
+import { dino as ankylosaurus } from './ankylosaurus'
+import { dino as euoplocephalus } from './euoplocephalus'
+import { dino as parasaurolophus } from './parasaurolophus'
+import { dino as edmontosaurus } from './edmontosaurus'
+import { dino as coelophysis } from './coelophysis'
+import { dino as plateosaurus } from './plateosaurus'
+import { dino as herrerasaurus } from './herrerasaurus'
+import { dino as allosaurus } from './allosaurus'
+import { dino as therizinosaurus } from './therizinosaurus'
+import { dino as mosasaurus } from './mosasaurus'
+import { dino as plesiosaurus } from './plesiosaurus'
+import { dino as pteranodon } from './pteranodon'
+import { dino as quetzalcoatlus } from './quetzalcoatlus'
+import { dino as giganotosaurus } from './giganotosaurus'
+import { dino as carcharodontosaurus } from './carcharodontosaurus'
 
 export const dinosaurs: Dino[] = [
   tyrannosaurus,
@@ -60,35 +60,3 @@ export const dinosaurs: Dino[] = [
   giganotosaurus,
   carcharodontosaurus,
 ]
-
-export const dinoPhotos: Record<string, DinoPhotoSet> = {
-  tyrannosaurus: tyrannosaurusPhotos,
-  tarbosaurus: tarbosaurusPhotos,
-  albertosaurus: albertosaurusPhotos,
-  velociraptor: velociraptorPhotos,
-  deinonychus: deinonychusPhotos,
-  utahraptor: utahraptorPhotos,
-  triceratops: triceratopsPhotos,
-  styracosaurus: styracosaurusPhotos,
-  stegosaurus: stegosaurusPhotos,
-  kentrosaurus: kentrosaurusPhotos,
-  brachiosaurus: brachiosaurusPhotos,
-  giraffatitan: giraffatitanPhotos,
-  spinosaurus: spinosaurusPhotos,
-  baryonyx: baryonyxPhotos,
-  ankylosaurus: ankylosaurusPhotos,
-  euoplocephalus: euoplocephalusPhotos,
-  parasaurolophus: parasaurolophusPhotos,
-  edmontosaurus: edmontosaurusPhotos,
-  coelophysis: coelophysisPhotos,
-  plateosaurus: plateosaurusPhotos,
-  herrerasaurus: herrerasaurusPhotos,
-  allosaurus: allosaurusPhotos,
-  therizinosaurus: therizinosaurusPhotos,
-  mosasaurus: mosasaurusPhotos,
-  plesiosaurus: plesiosaurusPhotos,
-  pteranodon: pteranodonPhotos,
-  quetzalcoatlus: quetzalcoatlusPhotos,
-  giganotosaurus: giganotosaurusPhotos,
-  carcharodontosaurus: carcharodontosaurusPhotos,
-}

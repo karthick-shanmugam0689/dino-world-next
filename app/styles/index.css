@@ -1,0 +1,117 @@
+/* ---------- A–Z index ---------- */
+
+.alpha-jump {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 0 0 2.5rem;
+}
+
+.alpha-jump a {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.alpha-jump a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.alpha-group {
+  scroll-margin-top: 5rem;
+  margin-bottom: 2rem;
+}
+
+.alpha-heading {
+  font-size: 1.3rem;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.4rem;
+  margin: 0 0 0.6rem;
+}
+
+.index-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+
+.index-row {
+  display: grid;
+  grid-template-columns: 3.4rem minmax(0, 1fr) minmax(0, 0.9fr) auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  background: var(--bg-card);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.index-row:hover {
+  transform: translateX(5px);
+  border-color: var(--tint);
+}
+
+.index-row-icon {
+  width: 3.4rem;
+  color: var(--tint);
+  display: inline-flex;
+}
+
+.index-row-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.index-row-name {
+  font-weight: 600;
+  color: #eef6f0;
+}
+
+.index-row-meaning {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.index-row-family {
+  font-size: 0.85rem;
+  color: var(--tint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.index-row-len {
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 44rem) {
+  .index-row {
+    grid-template-columns: 2.8rem minmax(0, 1fr) auto;
+  }
+  .index-row-family,
+  .index-row-diet {
+    display: none;
+  }
+}

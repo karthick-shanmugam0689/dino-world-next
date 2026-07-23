@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Coelophysis_bauri_mount.jpg/960px-Coelophysis_bauri_mount.jpg",
-    "license": "CC BY 2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Coelophysis_bauri_mount.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Coelophysis_TD.png/960px-Coelophysis_TD.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Coelophysis_TD.png"
-  },
-}
 
 export const dino: Dino = {
   id: "coelophysis",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Hollow form",
   familyId: "coelophysidae",
   silhouette: "raptor",
-  period: "Late Triassic · 221–196 Mya",
+  periodId: "triassic",
+  periodLabel: "Late Triassic · 221–196 Mya",
   diet: "Carnivore",
   lengthM: 3,
   heightM: 1,
@@ -34,5 +22,18 @@ export const dino: Dino = {
     "Its bones were hollow like a bird's — the family name means \"hollow form\"."
   ],
   color: "#cf8a52",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Coelophysis_bauri_mount.jpg/960px-Coelophysis_bauri_mount.jpg",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Coelophysis_bauri_mount.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Coelophysis_TD.png/960px-Coelophysis_TD.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Coelophysis_TD.png"
+  },
+},
+
   model,
 }

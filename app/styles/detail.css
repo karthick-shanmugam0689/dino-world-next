@@ -1,0 +1,323 @@
+/* ---------- detail page ---------- */
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 56rem) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-visual {
+  position: sticky;
+  top: 5.5rem;
+}
+
+@media (max-width: 56rem) {
+  .detail-visual {
+    position: static;
+  }
+}
+
+.stage-toggle {
+  display: inline-flex;
+  gap: 0.2rem;
+  padding: 0.25rem;
+  margin-bottom: 0.7rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.stage-toggle-btn {
+  border: 0;
+  background: none;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.32rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.stage-toggle-btn:hover {
+  color: var(--text);
+}
+
+.stage-toggle-btn.active {
+  background: var(--accent);
+  color: #17130a;
+}
+
+.dino-stage {
+  position: relative;
+  height: clamp(22rem, 62vh, 34rem);
+  border-radius: 1.2rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.dino-stage.draggable {
+  cursor: grab;
+  /* let the browser still handle vertical page scroll on touch; we own horizontal */
+  touch-action: pan-y;
+}
+
+.dino-stage.draggable.dragging {
+  cursor: grabbing;
+}
+
+.dino-stage.draggable.dragging,
+.dino-stage.draggable.dragging * {
+  user-select: none;
+}
+
+/* carousel track: all visited views sit side by side; switching tabs just slides it */
+.stage-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-track {
+    transition: none;
+  }
+}
+
+.stage-slide {
+  position: relative;
+  flex: 0 0 auto;
+  height: 100%;
+}
+
+/* placeholder shown while the 3D scene chunk loads — matches stage dimensions to avoid layout shift */
+.dino-stage-loading {
+  background:
+    radial-gradient(ellipse at 70% 20%, rgba(232, 163, 61, 0.14), transparent 55%),
+    linear-gradient(180deg, #14231d 0%, #101a16 100%);
+  animation: stage-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes stage-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.stage-3d {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 20%, rgba(232, 163, 61, 0.14), transparent 55%),
+    linear-gradient(180deg, #14231d 0%, #101a16 100%);
+}
+
+.stage-photo {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0b120f;
+}
+
+.stage-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  -webkit-user-drag: none;
+}
+
+.stage-photo-credit {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.7));
+  text-align: right;
+}
+
+.stage-photo-credit a {
+  color: var(--accent);
+}
+
+.stage-photo-credit a:hover {
+  text-decoration: underline;
+}
+
+.dino-stage canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stage-hint {
+  position: absolute;
+  top: 0.9rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  backdrop-filter: blur(6px);
+}
+
+.hint-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+.stage-scale {
+  position: absolute;
+  bottom: 0.8rem;
+  right: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  border-radius: 999px;
+  padding: 0.22rem 0.7rem;
+  backdrop-filter: blur(6px);
+}
+
+.dino-stage-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fallback-dino {
+  width: 70%;
+  animation: bob 3.4s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+.detail-meaning {
+  color: var(--accent);
+  font-style: italic;
+  margin: 0 0 0.2rem;
+}
+
+.not-dino-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  margin: 0 0 0.7rem;
+}
+
+.detail-info h1 {
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
+  margin: 0;
+}
+
+.detail-desc {
+  margin: 1.4rem 0;
+  color: var(--text);
+}
+
+.stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 1.6rem 0;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 6rem;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.88rem;
+}
+
+.stat-label {
+  color: var(--text-dim);
+}
+
+.stat-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.stat-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.stat-value {
+  text-align: right;
+  font-weight: 500;
+  color: #eef6f0;
+}
+
+.fact-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.2rem 1.4rem;
+  margin: 1.8rem 0;
+}
+
+.fact-box h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.fact-box ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+}
+
+.family-link {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.family-link:hover {
+  text-decoration: underline;
+}

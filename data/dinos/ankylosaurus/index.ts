@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Ankylosaurus_skull_AMNH.jpg/960px-Ankylosaurus_skull_AMNH.jpg",
-    "license": "Public domain",
-    "source": "https://commons.wikimedia.org/wiki/File:Ankylosaurus_skull_AMNH.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Ankylosaurus_magniventris_by_sphenaphinae.png/960px-Ankylosaurus_magniventris_by_sphenaphinae.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Ankylosaurus_magniventris_by_sphenaphinae.png"
-  },
-}
 
 export const dino: Dino = {
   id: "ankylosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Fused lizard",
   familyId: "ankylosauridae",
   silhouette: "ankylo",
-  period: "Late Cretaceous · 68–66 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 68–66 Mya",
   diet: "Herbivore",
   lengthM: 8,
   heightM: 1.7,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#9c8a63",
   featured: true,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Ankylosaurus_skull_AMNH.jpg/960px-Ankylosaurus_skull_AMNH.jpg",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Ankylosaurus_skull_AMNH.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Ankylosaurus_magniventris_by_sphenaphinae.png/960px-Ankylosaurus_magniventris_by_sphenaphinae.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Ankylosaurus_magniventris_by_sphenaphinae.png"
+  },
+},
+
   model,
 }

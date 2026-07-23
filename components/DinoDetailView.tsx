@@ -4,8 +4,6 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import type { Dino, Family } from '../data/types'
-import { getPeriodId } from '../data/helpers'
-
 // Code-split three.js out of the page's initial bundle: the WebGL scene only
 // loads once this Client Component mounts, keeping it off the critical path.
 const DinoCanvas = dynamic(() => import('./DinoCanvas').then((m) => m.DinoCanvas), {
@@ -64,8 +62,8 @@ export function DinoDetailView({ dino, family }: { dino: Dino; family: Family })
             <p className="detail-meaning">"{dino.meaning}"</p>
             <h1 style={{ color: dino.color }}>{dino.name}</h1>
             <div className="chips">
-              <Link className="chip chip-link" href={`/period/${getPeriodId(dino)}`} title="See every dinosaur from this period">
-                {dino.period}
+              <Link className="chip chip-link" href={`/period/${dino.periodId}`} title="See every dinosaur from this period">
+                {dino.periodLabel}
               </Link>
               <span className={`chip chip-${dino.diet.toLowerCase()}`}>{dino.diet}</span>
               <span className="chip">{dino.location}</span>

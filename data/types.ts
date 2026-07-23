@@ -1,3 +1,6 @@
+import type { FamilyId } from './families'
+export type { FamilyId }
+
 export type SilhouetteKey =
   | 'trex'
   | 'raptor'
@@ -12,6 +15,7 @@ export type SilhouetteKey =
   | 'ptero'
   | 'therizino'
 
+/** Procedural 3D body-plan config consumed by `three/createDinoScene`. */
 export interface DinoModelConfig {
   kind: 'theropod' | 'sauropod' | 'quadruped' | 'marine' | 'pterosaur'
   bodyLength: number
@@ -58,20 +62,30 @@ export interface DinoModelConfig {
 }
 
 export interface Family {
-  id: string
+  id: FamilyId
   name: string
   description: string
   period: string
-  traits: string[]
+  traits: readonly string[]
 }
 
+/**
+ * Field-guide species record.
+ *
+ * Logical groups (kept flat for agent-friendly writing):
+ * - taxonomy: id, name, meaning, familyId, periodId, periodLabel, diet, location, clade, stats, description, facts
+ * - display: silhouette, color, featured, photos
+ * - render: model
+ */
 export interface Dino {
   id: string
   name: string
   meaning: string
-  familyId: string
-  silhouette: SilhouetteKey
-  period: string
+  familyId: FamilyId
+  /** Canonical period bucket for filtering / routing */
+  periodId: PeriodId
+  /** Human-readable era label, e.g. "Late Cretaceous · 68–66 Mya" */
+  periodLabel: string
   diet: 'Carnivore' | 'Herbivore' | 'Piscivore'
   lengthM: number
   heightM: number
@@ -80,13 +94,17 @@ export interface Dino {
   location: string
   description: string
   facts: string[]
-  color: string
-  featured?: boolean
-  model: DinoModelConfig
   /** unset = a true dinosaur; set for famous "Mesozoic megafauna" often mistaken for one */
   clade?: 'marine-reptile' | 'pterosaur'
   /** pterosaurs only: wingtip-to-wingtip span in meters, shown as its own stat */
   wingSpanM?: number
+  // --- display ---
+  silhouette: SilhouetteKey
+  color: string
+  featured?: boolean
+  photos: DinoPhotoSet
+  // --- render ---
+  model: DinoModelConfig
 }
 
 export type PeriodId = 'triassic' | 'jurassic' | 'cretaceous'

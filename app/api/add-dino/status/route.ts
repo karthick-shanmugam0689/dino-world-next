@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { findRunByRequestId, findPrUrlInJobLog, getRunJob } from '../../../../lib/github'
+import { findRunByRequestId, findPrByRequestId, getRunJob } from '../../../../lib/github'
 
 const STEP = {
   duplicate: "❌ Already in the collection",
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
   }
 
   if (stepConclusion(job, STEP.pr) === 'success') {
-    const prUrl = job ? await findPrUrlInJobLog(job.id) : null
+    const prUrl = await findPrByRequestId(requestId)
     return NextResponse.json({
       phase: 'done',
       outcome: 'success',

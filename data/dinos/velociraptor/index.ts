@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Velociraptor_skeleton_white_background.jpg/960px-Velociraptor_skeleton_white_background.jpg",
-    "license": "CC BY 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Velociraptor_skeleton_white_background.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Velociraptor_Restoration.png/960px-Velociraptor_Restoration.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Velociraptor_Restoration.png"
-  },
-}
 
 export const dino: Dino = {
   id: "velociraptor",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Swift thief",
   familyId: "dromaeosauridae",
   silhouette: "raptor",
-  period: "Late Cretaceous · 75–71 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 75–71 Mya",
   diet: "Carnivore",
   lengthM: 2,
   heightM: 0.7,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#7fa15a",
   featured: true,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Velociraptor_skeleton_white_background.jpg/960px-Velociraptor_skeleton_white_background.jpg",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Velociraptor_skeleton_white_background.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Velociraptor_Restoration.png/960px-Velociraptor_Restoration.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Velociraptor_Restoration.png"
+  },
+},
+
   model,
 }

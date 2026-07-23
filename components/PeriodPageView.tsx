@@ -3,11 +3,19 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import type { Dino, Period } from '../data/types'
-import { getFamily } from '../data/helpers'
-import { periods } from '../data/periods'
-import { DinoIcon } from './DinoIcon'
+import { DinoCard } from './DinoCard'
 
-export function PeriodPageView({ period, members }: { period: Period; members: Dino[] }) {
+export function PeriodPageView({
+  period,
+  members,
+  allPeriods,
+  familyNames,
+}: {
+  period: Period
+  members: Dino[]
+  allPeriods: Array<Pick<Period, 'id' | 'name' | 'color'>>
+  familyNames: Record<string, string>
+}) {
   return (
     <main className="page period-page" key={period.id}>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
@@ -30,7 +38,7 @@ export function PeriodPageView({ period, members }: { period: Period; members: D
       </motion.header>
 
       <div className="period-nav">
-        {periods.map((p) =>
+        {allPeriods.map((p) =>
           p.id === period.id ? (
             <span key={p.id} className="period-nav-item current" style={{ borderColor: p.color, color: p.color }}>
               {p.name}
@@ -56,16 +64,17 @@ export function PeriodPageView({ period, members }: { period: Period; members: D
             viewport={{ once: true, margin: '-40px' }}
             transition={{ delay: (i % 4) * 0.08, duration: 0.55, ease: 'easeOut' }}
           >
-            <Link href={`/dino/${dino.id}`} className="dino-card" style={{ ['--tint' as string]: dino.color }}>
-              <span className="dino-card-icon">
-                <DinoIcon kind={dino.silhouette} title={dino.name} />
-              </span>
-              <span className="dino-card-name">{dino.name}</span>
-              <span className="dino-card-family">{getFamily(dino.familyId)?.name}</span>
-              <span className="dino-card-meta">
-                {dino.lengthM} m · {dino.diet}
-              </span>
-            </Link>
+            <DinoCard
+              dino={{
+                id: dino.id,
+                name: dino.name,
+                color: dino.color,
+                silhouette: dino.silhouette,
+                lengthM: dino.lengthM,
+                diet: dino.diet,
+                familyName: familyNames[dino.familyId],
+              }}
+            />
           </motion.div>
         ))}
       </div>

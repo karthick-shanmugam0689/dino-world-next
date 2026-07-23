@@ -57,12 +57,15 @@ Decide, and briefly state your reasoning for each:
    `theropod | sauropod | quadruped | marine | pterosaur`. Choose the closest
    existing species and base your `model` numbers on theirs, scaled to real size.
    **If none of the five fit, STOP and ask** — do not invent a new kind or edit
-   `three/dinoScene.ts`.
+   `three/createDinoScene.ts`. New morphology uses existing `features.*` flags;
+   a brand-new flag needs a new `three/features/*.ts` module (see `three/README.md`).
 4. **Silhouette** — reuse the closest existing `SilhouetteKey` (see
    `data/types.ts`). Only hand-draw a new SVG in `components/DinoIcon.tsx` if
    nothing is even close; keep it in the same 120×80 right-facing viewBox style.
 
 ## Step 4 — Reference photos
+
+**Required.** Always run:
 
 ```bash
 npx tsx scripts/find-photos.ts "<Wikipedia title>"
@@ -71,22 +74,32 @@ npx tsx scripts/find-photos.ts "<Wikipedia title>"
 Pick the best ONE skeleton and ONE realistic candidate (a clear side profile
 reads best). Only accept CC0 / public domain / CC BY / CC BY-SA licenses. If a
 category has no acceptable candidate, omit it — the UI hides missing tabs.
+Record in the PR body whether photos were found or omitted (never invent URLs).
 
 ## Step 5 — Write the files
 
 Create `data/dinos/<id>/model.ts` and `data/dinos/<id>/index.ts`, matching the
 exact shape of an existing folder (open `data/dinos/tyrannosaurus/` as the
-template). `model.ts` exports `model: DinoModelConfig`; `index.ts` exports
-`photos: DinoPhotoSet` and `dino: Dino` (spreading in `model`).
+template). `model.ts` exports `model: DinoModelConfig`; `index.ts` exports a
+single `dino: Dino` object that includes:
+- `periodId` (`triassic` | `jurassic` | `cretaceous`) and `periodLabel` (display
+  string like `"Late Cretaceous · 68–66 Mya"`)
+- `photos: DinoPhotoSet` colocated on the dino (not a separate export)
+- `model` (imported from `./model`)
 
-Then regenerate the barrel — **never edit `data/dinos/index.ts` by hand**:
+Then regenerate the barrel **and** search index — **never edit
+`data/dinos/index.ts` or `data/search-index.ts` by hand**:
 
 ```bash
 npx tsx scripts/generate-dino-index.ts
 ```
 
-Add a new family to `data/families.ts` only if Step 3 decided so. If the period
-is one we already list, nothing else is needed; the dino shows up automatically.
+Add a new family to `data/families.ts` only if Step 3 decided so (keep the
+`as const` array — do not remove it). If the period is one we already list,
+nothing else is needed; the dino shows up automatically.
+
+If `find-photos.ts` returned no acceptable candidates, still write
+`photos: {}` and note that in the PR — the generator will warn but not fail.
 
 ## Step 6 — Verify (CAP: 2 fix attempts)
 
@@ -106,7 +119,13 @@ git checkout -b add-dino/<id>
 git add -A
 git commit -m "Add <Name> to the field guide"
 git push -u origin add-dino/<id>
-gh pr create --title "Add <Name>" --body "<what you added, sources + licenses, and any decisions/assumptions worth a human check>"
+gh pr create --title "Add <Name>" --body "$(cat <<'EOF'
+<what you added, sources + licenses, photo outcome, and any decisions worth a human check>
+
+---
+request_id: <site pipeline correlation id — omit this line for manual PRs>
+EOF
+)"
 ```
 
 Report the PR URL. Do not merge it and do not run any deploy commands.

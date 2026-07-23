@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { searchAll } from '../data/helpers'
+import { searchIndexQuery } from '../data/search-index'
 import { DinoIcon } from './DinoIcon'
 
 function SearchGlyph() {
@@ -33,6 +33,7 @@ function PlusGlyph() {
   )
 }
 
+/** Client island: interactive search + mobile chrome. Logo/nav stay here so pathname highlighting works. */
 export function Header() {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -41,7 +42,7 @@ export function Header() {
   const router = useRouter()
   const pathname = usePathname()
 
-  const { dinos, families, periods } = searchAll(query)
+  const { dinos, families, periods } = searchIndexQuery(query)
   const hasResults = dinos.length > 0 || families.length > 0 || periods.length > 0
 
   useEffect(() => {

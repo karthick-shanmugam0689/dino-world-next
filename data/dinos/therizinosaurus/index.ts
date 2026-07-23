@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Therizinosaurus_arms.jpg/960px-Therizinosaurus_arms.jpg",
-    "license": "CC BY 2.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Therizinosaurus_arms.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Therizinosaurus_Restoration.png/960px-Therizinosaurus_Restoration.png",
-    "license": "CC BY 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Therizinosaurus_Restoration.png"
-  },
-}
 
 export const dino: Dino = {
   id: "therizinosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Scythe lizard",
   familyId: "therizinosauridae",
   silhouette: "therizino",
-  period: "Late Cretaceous · 70 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 70 Mya",
   diet: "Herbivore",
   lengthM: 9,
   heightM: 5,
@@ -34,5 +22,18 @@ export const dino: Dino = {
     "Likely used its claws for hooking branches to feed, not for fighting."
   ],
   color: "#5f7a4a",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Therizinosaurus_arms.jpg/960px-Therizinosaurus_arms.jpg",
+    "license": "CC BY 2.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Therizinosaurus_arms.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Therizinosaurus_Restoration.png/960px-Therizinosaurus_Restoration.png",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Therizinosaurus_Restoration.png"
+  },
+},
+
   model,
 }

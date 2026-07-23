@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Tarbosaurus_bataar_mount_-_Dinosaur_Mysteries_exhibit.jpg/960px-Tarbosaurus_bataar_mount_-_Dinosaur_Mysteries_exhibit.jpg",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Tarbosaurus_bataar_mount_-_Dinosaur_Mysteries_exhibit.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Tarbosaurus_baatar_paleoart_%282024%29.png/960px-Tarbosaurus_baatar_paleoart_%282024%29.png",
-    "license": "CC BY 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Tarbosaurus_baatar_paleoart_%282024%29.png"
-  },
-}
 
 export const dino: Dino = {
   id: "tarbosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Alarming lizard",
   familyId: "tyrannosauridae",
   silhouette: "trex",
-  period: "Late Cretaceous · 70 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 70 Mya",
   diet: "Carnivore",
   lengthM: 10,
   heightM: 3.2,
@@ -33,5 +21,18 @@ export const dino: Dino = {
     "Its arms were even smaller relative to its body than T. rex's."
   ],
   color: "#b05c42",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Tarbosaurus_bataar_mount_-_Dinosaur_Mysteries_exhibit.jpg/960px-Tarbosaurus_bataar_mount_-_Dinosaur_Mysteries_exhibit.jpg",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tarbosaurus_bataar_mount_-_Dinosaur_Mysteries_exhibit.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Tarbosaurus_baatar_paleoart_%282024%29.png/960px-Tarbosaurus_baatar_paleoart_%282024%29.png",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tarbosaurus_baatar_paleoart_%282024%29.png"
+  },
+},
+
   model,
 }
