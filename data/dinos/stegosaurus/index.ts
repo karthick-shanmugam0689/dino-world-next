@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/HMNS_Stegosaurus.jpg/960px-HMNS_Stegosaurus.jpg",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:HMNS_Stegosaurus.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Stegosaurus_stenops_Life_Reconstruction.png/960px-Stegosaurus_stenops_Life_Reconstruction.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Stegosaurus_stenops_Life_Reconstruction.png"
-  },
-}
 
 export const dino: Dino = {
   id: "stegosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Roofed lizard",
   familyId: "stegosauridae",
   silhouette: "stego",
-  period: "Late Jurassic · 155–150 Mya",
+  periodId: "jurassic",
+  periodLabel: "Late Jurassic · 155–150 Mya",
   diet: "Herbivore",
   lengthM: 9,
   heightM: 4,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#5e8b7e",
   featured: true,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/HMNS_Stegosaurus.jpg/960px-HMNS_Stegosaurus.jpg",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:HMNS_Stegosaurus.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Stegosaurus_stenops_Life_Reconstruction.png/960px-Stegosaurus_stenops_Life_Reconstruction.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Stegosaurus_stenops_Life_Reconstruction.png"
+  },
+},
+
   model,
 }

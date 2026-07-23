@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Deinonychus_FMNH.jpg/960px-Deinonychus_FMNH.jpg",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Deinonychus_FMNH.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Deinonychus_Restoration.png/960px-Deinonychus_Restoration.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Deinonychus_Restoration.png"
-  },
-}
 
 export const dino: Dino = {
   id: "deinonychus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Terrible claw",
   familyId: "dromaeosauridae",
   silhouette: "raptor",
-  period: "Early Cretaceous · 115–108 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Early Cretaceous · 115–108 Mya",
   diet: "Carnivore",
   lengthM: 3.4,
   heightM: 1.2,
@@ -33,5 +21,18 @@ export const dino: Dino = {
     "Its discovery in 1964 sparked the modern view of dinosaurs."
   ],
   color: "#6d9161",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Deinonychus_FMNH.jpg/960px-Deinonychus_FMNH.jpg",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Deinonychus_FMNH.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Deinonychus_Restoration.png/960px-Deinonychus_Restoration.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Deinonychus_Restoration.png"
+  },
+},
+
   model,
 }

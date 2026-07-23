@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/StyracosaurCMN2.jpg/960px-StyracosaurCMN2.jpg",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:StyracosaurCMN2.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Styracosaurus_TD.png/960px-Styracosaurus_TD.png",
-    "license": "CC0",
-    "source": "https://commons.wikimedia.org/wiki/File:Styracosaurus_TD.png"
-  },
-}
 
 export const dino: Dino = {
   id: "styracosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Spiked lizard",
   familyId: "ceratopsidae",
   silhouette: "ceratops",
-  period: "Late Cretaceous · 75 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 75 Mya",
   diet: "Herbivore",
   lengthM: 5.5,
   heightM: 1.8,
@@ -33,5 +21,18 @@ export const dino: Dino = {
     "Bonebeds suggest it moved in large herds."
   ],
   color: "#98763f",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/StyracosaurCMN2.jpg/960px-StyracosaurCMN2.jpg",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:StyracosaurCMN2.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Styracosaurus_TD.png/960px-Styracosaurus_TD.png",
+    "license": "CC0",
+    "source": "https://commons.wikimedia.org/wiki/File:Styracosaurus_TD.png"
+  },
+},
+
   model,
 }

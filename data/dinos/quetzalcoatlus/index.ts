@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg/960px-Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png/960px-Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png",
-    "license": "CC BY 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png"
-  },
-}
 
 export const dino: Dino = {
   id: "quetzalcoatlus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Named for the Aztec feathered serpent god Quetzalcoatl",
   familyId: "azhdarchidae",
   silhouette: "ptero",
-  period: "Late Cretaceous · 70–66 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 70–66 Mya",
   diet: "Carnivore",
   lengthM: 3,
   heightM: 3,
@@ -36,5 +24,18 @@ export const dino: Dino = {
   color: "#8a8477",
   clade: "pterosaur",
   wingSpanM: 10.5,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg/960px-Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Quetzaloatlus_lawsoni_skeletal_reconstruction.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png/960px-Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Life_restoration_of_a_group_of_giant_azhdarchids%2C_Quetzalcoatlus_northropi%2C_foraging_on_a_Cretaceous_fern_prairie.png"
+  },
+},
+
   model,
 }

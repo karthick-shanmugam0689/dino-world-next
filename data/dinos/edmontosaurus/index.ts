@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Mounted_Edmontosaurus.jpg/960px-Mounted_Edmontosaurus.jpg",
-    "license": "Public domain",
-    "source": "https://commons.wikimedia.org/wiki/File:Mounted_Edmontosaurus.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Edmontosaurus_sp._reconstruction.PNG/960px-Edmontosaurus_sp._reconstruction.PNG",
-    "license": "CC BY 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Edmontosaurus_sp._reconstruction.PNG"
-  },
-}
 
 export const dino: Dino = {
   id: "edmontosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Lizard from Edmonton",
   familyId: "hadrosauridae",
   silhouette: "hadro",
-  period: "Late Cretaceous · 73–66 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 73–66 Mya",
   diet: "Herbivore",
   lengthM: 12,
   heightM: 3.4,
@@ -34,5 +22,18 @@ export const dino: Dino = {
     "It had up to 1,000 teeth arranged in grinding batteries."
   ],
   color: "#a4784f",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Mounted_Edmontosaurus.jpg/960px-Mounted_Edmontosaurus.jpg",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Mounted_Edmontosaurus.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Edmontosaurus_sp._reconstruction.PNG/960px-Edmontosaurus_sp._reconstruction.PNG",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Edmontosaurus_sp._reconstruction.PNG"
+  },
+},
+
   model,
 }

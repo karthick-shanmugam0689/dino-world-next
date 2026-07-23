@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Albertosaurus_sarcophagus_cast.jpg/960px-Albertosaurus_sarcophagus_cast.jpg",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Albertosaurus_sarcophagus_cast.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Albertosaurus_TD.png/960px-Albertosaurus_TD.png",
-    "license": "CC BY 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Albertosaurus_TD.png"
-  },
-}
 
 export const dino: Dino = {
   id: "albertosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Alberta lizard",
   familyId: "tyrannosauridae",
   silhouette: "trex",
-  period: "Late Cretaceous · 71 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 71 Mya",
   diet: "Carnivore",
   lengthM: 9,
   heightM: 2.9,
@@ -33,5 +21,18 @@ export const dino: Dino = {
     "Could likely outrun every other tyrannosaurid."
   ],
   color: "#a8684f",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Albertosaurus_sarcophagus_cast.jpg/960px-Albertosaurus_sarcophagus_cast.jpg",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Albertosaurus_sarcophagus_cast.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Albertosaurus_TD.png/960px-Albertosaurus_TD.png",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Albertosaurus_TD.png"
+  },
+},
+
   model,
 }

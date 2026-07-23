@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { dinosaurs } from '../../data/dinos'
+import { families } from '../../data/families'
 import { DinoIndexView } from '../../components/DinoIndexView'
 
 export const metadata: Metadata = {
@@ -7,5 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return <DinoIndexView />
+  const familyNames = Object.fromEntries(families.map((f) => [f.id, f.name]))
+  return <DinoIndexView dinosaurs={dinosaurs} familyNames={familyNames} />
 }

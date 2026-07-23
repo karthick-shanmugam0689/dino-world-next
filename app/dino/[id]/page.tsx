@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { dinosaurs, dinoPhotos } from '../../../data/dinos'
+import { dinosaurs } from '../../../data/dinos'
 import { getDino, getFamily } from '../../../data/helpers'
 import { DinoDetailView } from '../../../components/DinoDetailView'
 
@@ -17,7 +17,7 @@ export async function generateMetadata({
   const dino = getDino(id)
   if (!dino) return {}
 
-  const photo = dinoPhotos[dino.id]?.realistic ?? dinoPhotos[dino.id]?.skeleton
+  const photo = dino.photos.realistic ?? dino.photos.skeleton
   return {
     title: dino.name,
     description: `${dino.meaning} — ${dino.description}`,

@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Plateosaurus_Skelett_2.jpg/960px-Plateosaurus_Skelett_2.jpg",
-    "license": "CC BY-SA 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Plateosaurus_Skelett_2.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Plateosaurus_TD.png/960px-Plateosaurus_TD.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Plateosaurus_TD.png"
-  },
-}
 
 export const dino: Dino = {
   id: "plateosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Broad lizard",
   familyId: "plateosauridae",
   silhouette: "sauropod",
-  period: "Late Triassic · 214–204 Mya",
+  periodId: "triassic",
+  periodLabel: "Late Triassic · 214–204 Mya",
   diet: "Herbivore",
   lengthM: 8,
   heightM: 3.6,
@@ -34,5 +22,18 @@ export const dino: Dino = {
     "Individuals of the same age could differ wildly in size — growth depended on climate."
   ],
   color: "#96a05c",
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Plateosaurus_Skelett_2.jpg/960px-Plateosaurus_Skelett_2.jpg",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Plateosaurus_Skelett_2.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Plateosaurus_TD.png/960px-Plateosaurus_TD.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Plateosaurus_TD.png"
+  },
+},
+
   model,
 }

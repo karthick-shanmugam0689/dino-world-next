@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Tyrannosaurus_skeleton.jpg/960px-Tyrannosaurus_skeleton.jpg",
-    "license": "Public domain",
-    "source": "https://commons.wikimedia.org/wiki/File:Tyrannosaurus_skeleton.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Tyrannosaurus-rex-Profile-steveoc86_%28coloured%29%28mirror%29.png/960px-Tyrannosaurus-rex-Profile-steveoc86_%28coloured%29%28mirror%29.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Tyrannosaurus-rex-Profile-steveoc86_%28coloured%29%28mirror%29.png"
-  },
-}
 
 export const dino: Dino = {
   id: "tyrannosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Tyrant lizard king",
   familyId: "tyrannosauridae",
   silhouette: "trex",
-  period: "Late Cretaceous · 68–66 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 68–66 Mya",
   diet: "Carnivore",
   lengthM: 12.3,
   heightM: 3.9,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#c96a3b",
   featured: true,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Tyrannosaurus_skeleton.jpg/960px-Tyrannosaurus_skeleton.jpg",
+    "license": "Public domain",
+    "source": "https://commons.wikimedia.org/wiki/File:Tyrannosaurus_skeleton.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Tyrannosaurus-rex-Profile-steveoc86_%28coloured%29%28mirror%29.png/960px-Tyrannosaurus-rex-Profile-steveoc86_%28coloured%29%28mirror%29.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Tyrannosaurus-rex-Profile-steveoc86_%28coloured%29%28mirror%29.png"
+  },
+},
+
   model,
 }

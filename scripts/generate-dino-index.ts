@@ -1,7 +1,6 @@
 /**
  * Regenerate data/dinos/index.ts (the barrel that aggregates every species)
- * from the folders on disk. Deterministic: run it any time a dino folder is
- * added or removed and it rewrites the imports + arrays to match.
+ * from the folders on disk. Also writes data/search-index.ts for client search.
  *
  *   npx tsx scripts/generate-dino-index.ts
  *
@@ -12,12 +11,14 @@ import { readdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, join } from 'node:path'
 
-const DATA_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'data')
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+const DATA_DIR = join(ROOT, 'data')
 const DINOS_DIR = join(DATA_DIR, 'dinos')
 const INDEX_FILE = join(DINOS_DIR, 'index.ts')
+const SEARCH_INDEX_FILE = join(DATA_DIR, 'search-index.ts')
 const FAMILIES_FILE = join(DATA_DIR, 'families.ts')
+const PERIODS_FILE = join(DATA_DIR, 'periods.ts')
 
-// every subfolder that actually contains an index.ts is a species
 const folderIds = readdirSync(DINOS_DIR, { withFileTypes: true })
   .filter((e) => e.isDirectory() && existsSync(join(DINOS_DIR, e.name, 'index.ts')))
   .map((e) => e.name)
@@ -29,7 +30,6 @@ for (const id of folderIds) {
   }
 }
 
-// preserve the order already declared in the current barrel, if any
 let priorOrder: string[] = []
 if (existsSync(INDEX_FILE)) {
   const src = readFileSync(INDEX_FILE, 'utf8')
@@ -42,36 +42,106 @@ const ordered = [
   ...folderIds.filter((id) => !priorOrder.includes(id)).sort(),
 ]
 
-const imports = ordered
-  .map((id) => `import { dino as ${id}, photos as ${id}Photos } from './${id}'`)
-  .join('\n')
+const imports = ordered.map((id) => `import { dino as ${id} } from './${id}'`).join('\n')
 const arrayItems = ordered.map((id) => `  ${id},`).join('\n')
-const photoItems = ordered.map((id) => `  ${id}: ${id}Photos,`).join('\n')
 
 const out =
-  `import type { Dino, DinoPhotoSet } from '../types'\n` +
+  `import type { Dino } from '../types'\n` +
   imports +
   '\n\n' +
-  `export const dinosaurs: Dino[] = [\n${arrayItems}\n]\n\n` +
-  `export const dinoPhotos: Record<string, DinoPhotoSet> = {\n${photoItems}\n}\n`
+  `export const dinosaurs: Dino[] = [\n${arrayItems}\n]\n`
 
 writeFileSync(INDEX_FILE, out)
 console.log(`Regenerated ${INDEX_FILE} with ${ordered.length} dinosaurs.`)
 
-// Cross-check every dino's familyId against data/families.ts. A dangling id
-// compiles fine (page.tsx's getFamily(...)! is a type-only assertion) but
-// crashes the dino detail page at runtime — catch it here, deterministically,
-// with a clear message instead of a cryptic prerender TypeError.
 ;(async () => {
   const { dinosaurs } = await import(pathToFileURL(INDEX_FILE).href)
   const { families } = await import(pathToFileURL(FAMILIES_FILE).href)
+  const { periods } = await import(pathToFileURL(PERIODS_FILE).href)
+
   const familyIds = new Set(families.map((f: { id: string }) => f.id))
-  const orphaned = dinosaurs.filter((d: { familyId: string }) => !familyIds.has(d.familyId))
-  if (orphaned.length > 0) {
+  const periodIds = new Set(periods.map((p: { id: string }) => p.id))
+
+  let hardFail = false
+
+  const orphanedFamily = dinosaurs.filter((d: { familyId: string }) => !familyIds.has(d.familyId))
+  if (orphanedFamily.length > 0) {
+    hardFail = true
     console.error('Data integrity error: familyId does not match any entry in data/families.ts:')
-    for (const d of orphaned as { id: string; familyId: string }[]) {
+    for (const d of orphanedFamily as { id: string; familyId: string }[]) {
       console.error(`  - ${d.id}: familyId "${d.familyId}"`)
     }
-    process.exit(1)
   }
+
+  const badPeriod = dinosaurs.filter((d: { periodId: string }) => !periodIds.has(d.periodId))
+  if (badPeriod.length > 0) {
+    hardFail = true
+    console.error('Data integrity error: periodId is not a known PeriodId:')
+    for (const d of badPeriod as { id: string; periodId: string }[]) {
+      console.error(`  - ${d.id}: periodId "${d.periodId}"`)
+    }
+  }
+
+  const noPhotos = dinosaurs.filter(
+    (d: { photos?: { skeleton?: unknown; realistic?: unknown } }) =>
+      !d.photos?.skeleton && !d.photos?.realistic,
+  )
+  if (noPhotos.length > 0) {
+    console.warn('Warning: species with no reference photos (skeleton or realistic):')
+    for (const d of noPhotos as { id: string }[]) {
+      console.warn(`  - ${d.id}`)
+    }
+  }
+
+  // Client-safe search index (slim fields only)
+  type SearchEntry =
+    | { kind: 'dino'; id: string; name: string; meaning: string; color: string; silhouette: string }
+    | { kind: 'family'; id: string; name: string }
+    | { kind: 'period'; id: string; name: string; color: string; range: string }
+
+  const searchEntries: SearchEntry[] = [
+    ...dinosaurs.map(
+      (d: { id: string; name: string; meaning: string; color: string; silhouette: string }) => ({
+        kind: 'dino' as const,
+        id: d.id,
+        name: d.name,
+        meaning: d.meaning,
+        color: d.color,
+        silhouette: d.silhouette,
+      }),
+    ),
+    ...families.map((f: { id: string; name: string }) => ({
+      kind: 'family' as const,
+      id: f.id,
+      name: f.name,
+    })),
+    ...periods.map((p: { id: string; name: string; color: string; range: string }) => ({
+      kind: 'period' as const,
+      id: p.id,
+      name: p.name,
+      color: p.color,
+      range: p.range,
+    })),
+  ]
+
+  const searchOut =
+    `import type { SilhouetteKey } from './types'\n\n` +
+    `export type SearchEntry =\n` +
+    `  | { kind: 'dino'; id: string; name: string; meaning: string; color: string; silhouette: SilhouetteKey }\n` +
+    `  | { kind: 'family'; id: string; name: string }\n` +
+    `  | { kind: 'period'; id: string; name: string; color: string; range: string }\n\n` +
+    `export const searchIndex: SearchEntry[] = ${JSON.stringify(searchEntries, null, 2)} as SearchEntry[]\n\n` +
+    `export function searchIndexQuery(query: string) {\n` +
+    `  const q = query.trim().toLowerCase()\n` +
+    `  if (!q) return { dinos: [] as Extract<SearchEntry, { kind: 'dino' }>[], families: [] as Extract<SearchEntry, { kind: 'family' }>[], periods: [] as Extract<SearchEntry, { kind: 'period' }>[] }\n` +
+    `  const dinos = searchIndex.filter((e): e is Extract<SearchEntry, { kind: 'dino' }> => e.kind === 'dino' && (e.name.toLowerCase().includes(q) || e.meaning.toLowerCase().includes(q)))\n` +
+    `  const families = searchIndex.filter((e): e is Extract<SearchEntry, { kind: 'family' }> => e.kind === 'family' && e.name.toLowerCase().includes(q))\n` +
+    `  const periods = searchIndex.filter((e): e is Extract<SearchEntry, { kind: 'period' }> => e.kind === 'period' && e.name.toLowerCase().includes(q))\n` +
+    `  return { dinos, families, periods }\n` +
+    `}\n`
+
+  writeFileSync(SEARCH_INDEX_FILE, searchOut)
+  console.log(`Regenerated ${SEARCH_INDEX_FILE}`)
+
+  if (hardFail) process.exit(1)
 })()

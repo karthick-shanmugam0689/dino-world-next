@@ -1,0 +1,61 @@
+/* ---------- shared page bits ---------- */
+
+.page {
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: 6rem 1.5rem 4rem;
+  min-height: 100vh;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.breadcrumbs a:hover {
+  color: var(--accent);
+}
+
+.crumb-sep {
+  opacity: 0.5;
+}
+
+.crumb-current {
+  color: #eef6f0;
+  font-weight: 500;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+.chip {
+  font-size: 0.78rem;
+  padding: 0.28rem 0.8rem;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.chip-carnivore { border-color: #b0533f; color: #e8927e; }
+.chip-herbivore { border-color: #5e8b5a; color: #a4d09c; }
+.chip-piscivore { border-color: #4e7c99; color: #93c2dd; }
+
+a.chip-link {
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+a.chip-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

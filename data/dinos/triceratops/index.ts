@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/LA-Triceratops_mount-2.jpg/960px-LA-Triceratops_mount-2.jpg",
-    "license": "CC BY-SA 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:LA-Triceratops_mount-2.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Triceratops_TD.png/960px-Triceratops_TD.png",
-    "license": "CC BY 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Triceratops_TD.png"
-  },
-}
 
 export const dino: Dino = {
   id: "triceratops",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Three-horned face",
   familyId: "ceratopsidae",
   silhouette: "ceratops",
-  period: "Late Cretaceous · 68–66 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 68–66 Mya",
   diet: "Herbivore",
   lengthM: 9,
   heightM: 3,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#8a7f4e",
   featured: true,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/LA-Triceratops_mount-2.jpg/960px-LA-Triceratops_mount-2.jpg",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:LA-Triceratops_mount-2.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Triceratops_TD.png/960px-Triceratops_TD.png",
+    "license": "CC BY 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Triceratops_TD.png"
+  },
+},
+
   model,
 }

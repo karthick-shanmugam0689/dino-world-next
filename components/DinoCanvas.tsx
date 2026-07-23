@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import type { Dino } from '../data/types'
-import { dinoPhotos } from '../data/dinos'
 import { createDinoScene } from '../three/dinoScene'
 import { DinoIcon } from './DinoIcon'
 
@@ -18,7 +17,7 @@ const LABELS: Record<View, string> = {
 export function DinoCanvas({ dino }: { dino: Dino }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [webglFailed, setWebglFailed] = useState(false)
-  const photos = dinoPhotos[dino.id]
+  const photos = dino.photos
   const [view, setView] = useState<View>('3d')
   const [failed, setFailed] = useState<Record<string, boolean>>({})
   // Tabs are mounted the first time they're visited, then stay mounted so

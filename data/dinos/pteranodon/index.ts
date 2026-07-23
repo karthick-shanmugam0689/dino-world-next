@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/1/13/Pteranodon_skeletal.jpg",
-    "license": "CC BY 2.5",
-    "source": "https://commons.wikimedia.org/wiki/File:Pteranodon_skeletal.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Pteranodon_longiceps_mmartyniuk_wiki.png",
-    "license": "CC BY 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Pteranodon_longiceps_mmartyniuk_wiki.png"
-  },
-}
 
 export const dino: Dino = {
   id: "pteranodon",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Toothless wing",
   familyId: "pteranodontidae",
   silhouette: "ptero",
-  period: "Late Cretaceous · 86–84 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 86–84 Mya",
   diet: "Piscivore",
   lengthM: 2.5,
   heightM: 0.8,
@@ -36,5 +24,18 @@ export const dino: Dino = {
   color: "#8a7f6e",
   clade: "pterosaur",
   wingSpanM: 6.4,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/1/13/Pteranodon_skeletal.jpg",
+    "license": "CC BY 2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Pteranodon_skeletal.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Pteranodon_longiceps_mmartyniuk_wiki.png",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Pteranodon_longiceps_mmartyniuk_wiki.png"
+  },
+},
+
   model,
 }

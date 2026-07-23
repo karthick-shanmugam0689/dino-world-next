@@ -1,6 +1,4 @@
-import type { Family } from './types'
-
-export const families: Family[] = [
+export const families = [
   {
     id: 'tyrannosauridae',
     name: 'Tyrannosauridae',
@@ -145,4 +143,6 @@ export const families: Family[] = [
     period: 'Late Cretaceous',
     traits: ['Not a dinosaur — pterosaur', 'Largest known flying animals', 'Extremely long neck', 'Stalked prey on the ground'],
   },
-]
+] as const
+
+export type FamilyId = (typeof families)[number]['id']

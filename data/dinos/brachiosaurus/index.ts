@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Brachiosaurus_mount.jpg/960px-Brachiosaurus_mount.jpg",
-    "license": "CC BY 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Brachiosaurus_mount.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Brachiosaurus_altithorax_side_profile.png/960px-Brachiosaurus_altithorax_side_profile.png",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Brachiosaurus_altithorax_side_profile.png"
-  },
-}
 
 export const dino: Dino = {
   id: "brachiosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Arm lizard",
   familyId: "brachiosauridae",
   silhouette: "sauropod",
-  period: "Late Jurassic · 154–150 Mya",
+  periodId: "jurassic",
+  periodLabel: "Late Jurassic · 154–150 Mya",
   diet: "Herbivore",
   lengthM: 22,
   heightM: 12,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#7d94b5",
   featured: true,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Brachiosaurus_mount.jpg/960px-Brachiosaurus_mount.jpg",
+    "license": "CC BY 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Brachiosaurus_mount.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Brachiosaurus_altithorax_side_profile.png/960px-Brachiosaurus_altithorax_side_profile.png",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Brachiosaurus_altithorax_side_profile.png"
+  },
+},
+
   model,
 }

@@ -10,11 +10,9 @@ export const getFamilyMembers = (familyId: string) =>
 export const featuredDinos = dinosaurs.filter((d) => d.featured)
 
 export const getPeriod = (id: string) => periods.find((p) => p.id === id)
-/** Derived from the display string so the two never disagree. */
-export const getPeriodId = (dino: Dino): PeriodId =>
-  dino.period.includes('Triassic') ? 'triassic' : dino.period.includes('Jurassic') ? 'jurassic' : 'cretaceous'
+export const getPeriodId = (dino: Dino): PeriodId => dino.periodId
 export const getPeriodMembers = (periodId: PeriodId) =>
-  dinosaurs.filter((d) => getPeriodId(d) === periodId)
+  dinosaurs.filter((d) => d.periodId === periodId)
 
 export function searchAll(query: string) {
   const q = query.trim().toLowerCase()
@@ -23,7 +21,7 @@ export function searchAll(query: string) {
     dinos: dinosaurs.filter(
       (d) => d.name.toLowerCase().includes(q) || d.meaning.toLowerCase().includes(q),
     ),
-    families: families.filter((f) => f.name.toLowerCase().includes(q)),
+    families: [...families].filter((f) => f.name.toLowerCase().includes(q)) as Family[],
     periods: periods.filter((p) => p.name.toLowerCase().includes(q)),
   }
 }

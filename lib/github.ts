@@ -16,29 +16,31 @@ function authHeaders() {
   }
 }
 
-// Public-facing guardrails, since this route no longer sits behind an admin
-// secret. No new infrastructure — both checks just read the workflow's own
-// run history, which GitHub already tracks for free.
 const DAILY_RUN_LIMIT = 20 // ~$0.50-0.60 in agent tokens per run, so worst case ~$10-12/day
 
-export async function checkAddDinoQuota(): Promise<{ ok: true } | { ok: false; message: string }> {
+export async function checkAddDinoQuota(): Promise<{ ok: true } | { ok: false; message: string; status?: number }> {
   const today = new Date().toISOString().slice(0, 10)
   const res = await fetch(
     `https://api.github.com/repos/${OWNER}/${REPO}/actions/workflows/${WORKFLOW_FILE}/runs` +
       `?created=${encodeURIComponent('>=' + today)}&per_page=100`,
     { headers: authHeaders() },
   )
-  // Fail open on a transient GitHub API error — don't block real submissions
-  // over a flaky read that isn't the caller's fault.
-  if (!res.ok) return { ok: true }
+  // Fail closed on quota API errors — avoid unbounded spend when we cannot read the counter.
+  if (!res.ok) {
+    return {
+      ok: false,
+      message: 'Could not verify today’s run quota — try again in a few minutes.',
+      status: 503,
+    }
+  }
 
   const data = (await res.json()) as { total_count: number; workflow_runs: WorkflowRun[] }
 
   if (data.workflow_runs.some((r) => r.status !== 'completed')) {
-    return { ok: false, message: 'Another dino is already being researched — try again in a few minutes.' }
+    return { ok: false, message: 'Another dino is already being researched — try again in a few minutes.', status: 429 }
   }
   if (data.total_count >= DAILY_RUN_LIMIT) {
-    return { ok: false, message: `Hit today's limit of ${DAILY_RUN_LIMIT} runs — try again tomorrow.` }
+    return { ok: false, message: `Hit today's limit of ${DAILY_RUN_LIMIT} runs — try again tomorrow.`, status: 429 }
   }
   return { ok: true }
 }
@@ -62,7 +64,7 @@ export async function dispatchAddDinoWorkflow(dinoName: string, requestId: strin
 
 interface WorkflowRun {
   id: number
-  status: string // 'queued' | 'in_progress' | 'completed'
+  status: string
   conclusion: string | null
   name: string | null
   display_title: string
@@ -105,17 +107,34 @@ export async function getRunJob(runId: number): Promise<Job | null> {
   return data.jobs[0] ?? null
 }
 
-/** Best-effort scrape of the PR URL from the "Filing the paperwork" step's log (gh pr create prints it). */
-export async function findPrUrlInJobLog(jobId: number): Promise<string | null> {
+/**
+ * Find the PR opened for this request_id (embedded in the PR body as
+ * `request_id: <id>`). Prefer Issues Search; fall back to listing recent PRs.
+ */
+export async function findPrByRequestId(requestId: string): Promise<string | null> {
+  const marker = `request_id: ${requestId}`
+  try {
+    const q = encodeURIComponent(`repo:${OWNER}/${REPO} is:pr ${marker}`)
+    const res = await fetch(`https://api.github.com/search/issues?q=${q}&per_page=5`, {
+      headers: authHeaders(),
+    })
+    if (res.ok) {
+      const data = (await res.json()) as { items?: Array<{ html_url: string; body?: string | null }> }
+      const hit = data.items?.find((i) => i.body?.includes(marker))
+      if (hit) return hit.html_url
+    }
+  } catch {
+    // fall through
+  }
+
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${OWNER}/${REPO}/actions/jobs/${jobId}/logs`,
+      `https://api.github.com/repos/${OWNER}/${REPO}/pulls?state=all&per_page=20&sort=created&direction=desc`,
       { headers: authHeaders() },
     )
     if (!res.ok) return null
-    const text = await res.text()
-    const match = text.match(/https:\/\/github\.com\/[^\s]+\/pull\/\d+/)
-    return match?.[0] ?? null
+    const prs = (await res.json()) as Array<{ html_url: string; body?: string | null }>
+    return prs.find((p) => p.body?.includes(marker))?.html_url ?? null
   } catch {
     return null
   }

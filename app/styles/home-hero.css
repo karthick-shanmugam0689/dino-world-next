@@ -1,0 +1,122 @@
+/* ---------- hero / parallax ---------- */
+
+.hero {
+  position: relative;
+  height: 108vh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0a1a24 0%, #13303a 34%, #3c5a50 68%, #7a5a33 92%, #0e1613 100%);
+}
+
+.hero-layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.hero-svg {
+  top: auto;
+  width: 100%;
+  height: 62%;
+  display: block;
+}
+
+.hero-sun {
+  position: absolute;
+  top: 16%;
+  right: 14%;
+  width: clamp(90px, 12vw, 170px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe9b8 0%, #f5c05e 55%, transparent 72%);
+  box-shadow: 0 0 120px 45px rgba(245, 192, 94, 0.35);
+}
+
+.mountains-far {
+  bottom: 14%;
+  fill: #1c333a;
+  opacity: 0.9;
+}
+
+.hills-mid {
+  bottom: 2%;
+  fill: #22443c;
+}
+
+.hills-mid .herd {
+  fill: #16302a;
+}
+
+.ferns {
+  bottom: -2%;
+  height: 34%;
+  fill: #0c1410;
+}
+
+.hero-title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.5rem;
+  padding-bottom: 12vh;
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  font-size: 0.8rem;
+  color: #f0d9a8;
+  margin: 0 0 0.6rem;
+}
+
+.hero-title h1 {
+  font-size: clamp(2.6rem, 7.5vw, 5.5rem);
+  font-weight: 700;
+  margin: 0;
+  color: #f7fbf5;
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
+}
+
+.hero-title h1 span {
+  color: var(--accent);
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: #d8e6da;
+  max-width: 34rem;
+  margin: 1rem 0 0;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 2.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(240, 240, 230, 0.55);
+  border-radius: 14px;
+}
+
+.scroll-cue span {
+  position: absolute;
+  left: 50%;
+  top: 7px;
+  width: 4px;
+  height: 8px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: rgba(240, 240, 230, 0.75);
+  animation: cue 1.8s infinite ease-in-out;
+}
+
+@keyframes cue {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  60% { transform: translateY(14px); opacity: 0.2; }
+}

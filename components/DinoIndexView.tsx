@@ -1,20 +1,22 @@
 import Link from 'next/link'
-import { dinosaurs } from '../data/dinos'
-import { getFamily } from '../data/helpers'
+import type { Dino } from '../data/types'
 import { DinoIcon } from './DinoIcon'
 
-const sorted = [...dinosaurs].sort((a, b) => a.name.localeCompare(b.name))
+export function DinoIndexView({
+  dinosaurs,
+  familyNames,
+}: {
+  dinosaurs: Dino[]
+  familyNames: Record<string, string>
+}) {
+  const sorted = [...dinosaurs].sort((a, b) => a.name.localeCompare(b.name))
+  const groups = sorted.reduce<Record<string, Dino[]>>((acc, dino) => {
+    const letter = dino.name[0].toUpperCase()
+    ;(acc[letter] ??= []).push(dino)
+    return acc
+  }, {})
+  const letters = Object.keys(groups).sort()
 
-// group alphabetically by first letter, in order
-const groups = sorted.reduce<Record<string, typeof dinosaurs>>((acc, dino) => {
-  const letter = dino.name[0].toUpperCase()
-  ;(acc[letter] ??= []).push(dino)
-  return acc
-}, {})
-const letters = Object.keys(groups).sort()
-
-// No client hooks or browser APIs here, so this renders as a Server Component.
-export function DinoIndexView() {
   return (
     <main className="page index-page">
       <nav className="breadcrumbs" aria-label="Breadcrumb">
@@ -53,7 +55,7 @@ export function DinoIndexView() {
                     <span className="index-row-name">{dino.name}</span>
                     <span className="index-row-meaning">"{dino.meaning}"</span>
                   </span>
-                  <span className="index-row-family">{getFamily(dino.familyId)?.name}</span>
+                  <span className="index-row-family">{familyNames[dino.familyId]}</span>
                   <span className={`chip chip-${dino.diet.toLowerCase()} index-row-diet`}>{dino.diet}</span>
                   <span className="index-row-len">{dino.lengthM} m</span>
                 </Link>

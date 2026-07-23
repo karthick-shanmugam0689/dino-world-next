@@ -1,0 +1,12 @@
+:root {
+  --bg: #0e1613;
+  --bg-raised: #16211c;
+  --bg-card: #182a22;
+  --border: #27392f;
+  --text: #cfe0d5;
+  --text-dim: #8aa495;
+  --accent: #e8a33d;
+  --icon-eye: #0e1613;
+  /* Space Grotesk is loaded via next/font in app/layout.tsx (self-hosted, no render-blocking request) */
+  font-family: var(--font-space-grotesk), system-ui, -apple-system, sans-serif;
+}

@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/WLA_hmns_Allosaurus_White_Background.jpg/960px-WLA_hmns_Allosaurus_White_Background.jpg",
-    "license": "CC BY 2.5",
-    "source": "https://commons.wikimedia.org/wiki/File:WLA_hmns_Allosaurus_White_Background.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Allosaurus_Life_Restoration.jpg/960px-Allosaurus_Life_Restoration.jpg",
-    "license": "CC BY-SA 3.0",
-    "source": "https://commons.wikimedia.org/wiki/File:Allosaurus_Life_Restoration.jpg"
-  },
-}
 
 export const dino: Dino = {
   id: "allosaurus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Different lizard",
   familyId: "allosauridae",
   silhouette: "trex",
-  period: "Late Jurassic · 155–145 Mya",
+  periodId: "jurassic",
+  periodLabel: "Late Jurassic · 155–145 Mya",
   diet: "Carnivore",
   lengthM: 8.5,
   heightM: 3.1,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#a05a52",
   featured: false,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/WLA_hmns_Allosaurus_White_Background.jpg/960px-WLA_hmns_Allosaurus_White_Background.jpg",
+    "license": "CC BY 2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:WLA_hmns_Allosaurus_White_Background.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Allosaurus_Life_Restoration.jpg/960px-Allosaurus_Life_Restoration.jpg",
+    "license": "CC BY-SA 3.0",
+    "source": "https://commons.wikimedia.org/wiki/File:Allosaurus_Life_Restoration.jpg"
+  },
+},
+
   model,
 }

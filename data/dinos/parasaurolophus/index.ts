@@ -1,18 +1,5 @@
-import type { Dino, DinoPhotoSet } from '../../types'
+import type { Dino } from '../../types'
 import { model } from './model'
-
-export const photos: DinoPhotoSet = {
-  skeleton: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/FMNH_Parasaurolophus_fossil.jpg/960px-FMNH_Parasaurolophus_fossil.jpg",
-    "license": "CC BY-SA 4.0",
-    "source": "https://commons.wikimedia.org/wiki/File:FMNH_Parasaurolophus_fossil.jpg"
-  },
-  realistic: {
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Parasaurolophuspic_steveoc.jpg/960px-Parasaurolophuspic_steveoc.jpg",
-    "license": "CC BY 2.5",
-    "source": "https://commons.wikimedia.org/wiki/File:Parasaurolophuspic_steveoc.jpg"
-  },
-}
 
 export const dino: Dino = {
   id: "parasaurolophus",
@@ -20,7 +7,8 @@ export const dino: Dino = {
   meaning: "Near crested lizard",
   familyId: "hadrosauridae",
   silhouette: "hadro",
-  period: "Late Cretaceous · 76–73 Mya",
+  periodId: "cretaceous",
+  periodLabel: "Late Cretaceous · 76–73 Mya",
   diet: "Herbivore",
   lengthM: 9.5,
   heightM: 3,
@@ -35,5 +23,18 @@ export const dino: Dino = {
   ],
   color: "#b58a5e",
   featured: true,
+  photos: {
+  skeleton: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/FMNH_Parasaurolophus_fossil.jpg/960px-FMNH_Parasaurolophus_fossil.jpg",
+    "license": "CC BY-SA 4.0",
+    "source": "https://commons.wikimedia.org/wiki/File:FMNH_Parasaurolophus_fossil.jpg"
+  },
+  realistic: {
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Parasaurolophuspic_steveoc.jpg/960px-Parasaurolophuspic_steveoc.jpg",
+    "license": "CC BY 2.5",
+    "source": "https://commons.wikimedia.org/wiki/File:Parasaurolophuspic_steveoc.jpg"
+  },
+},
+
   model,
 }
