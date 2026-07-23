@@ -22,6 +22,17 @@ export const dino: Dino = {
   ],
   color: "#8b6f47",
   silhouette: "hadro",
-  photos: {},
+  photos: {
+    skeleton: {
+      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Ouranosaurus_MSNVE_3714.png/960px-Ouranosaurus_MSNVE_3714.png",
+      license: "CC BY 4.0",
+      source: "https://commons.wikimedia.org/wiki/File:Ouranosaurus_MSNVE_3714.png",
+    },
+    realistic: {
+      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Ouranosaurus_nigeriensis.png/960px-Ouranosaurus_nigeriensis.png",
+      license: "CC BY 4.0",
+      source: "https://commons.wikimedia.org/wiki/File:Ouranosaurus_nigeriensis.png",
+    },
+  },
   model,
 }
