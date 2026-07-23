@@ -239,6 +239,14 @@ export const searchIndex: SearchEntry[] = [
     "silhouette": "trex"
   },
   {
+    "kind": "dino",
+    "id": "ouranosaurus",
+    "name": "Ouranosaurus",
+    "meaning": "\"Brave monitor lizard\", from the Tuareg/Fulani word \"ourane\" (monitor lizard) and Greek \"sauros\" (lizard)",
+    "color": "#8b6f47",
+    "silhouette": "hadro"
+  },
+  {
     "kind": "family",
     "id": "tyrannosauridae",
     "name": "Tyrannosauridae"
