@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server'
+import { dinoPath, findExistingDino } from '../../../../lib/find-existing-dino'
 import { findRunByRequestId, findPrByRequestId, getRunJob } from '../../../../lib/github'
+
+/** run-name is `add-dino: <dino_name> [<request_id>]`. */
+function dinoNameFromRunTitle(title: string | null | undefined): string | null {
+  if (!title) return null
+  const m = title.match(/^add-dino:\s*(.+)\s*\[[^\]]+\]\s*$/i)
+  return m?.[1]?.trim() || null
+}
 
 const STEP = {
   duplicate: '❌ Already in the collection',
@@ -35,10 +43,16 @@ export async function GET(request: Request) {
   }
 
   if (stepConclusion(job, STEP.duplicate) === 'success') {
+    const submitted = dinoNameFromRunTitle(run.name) ?? dinoNameFromRunTitle(run.display_title)
+    const existing = submitted ? findExistingDino(submitted) : null
     return NextResponse.json({
       phase: 'done',
       outcome: 'duplicate',
-      message: 'Failed — the dino is already there.',
+      message: existing
+        ? `Already in the collection — ${existing.name} is right here.`
+        : 'Already in the collection.',
+      dinoUrl: existing ? dinoPath(existing.id) : null,
+      dinoName: existing?.name ?? null,
     })
   }
 
