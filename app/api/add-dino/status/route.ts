@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import { findRunByRequestId, findPrByRequestId, getRunJob } from '../../../../lib/github'
 
 const STEP = {
-  duplicate: "❌ Already in the collection",
+  duplicate: '❌ Already in the collection',
+  noWiki: '❌ No Wikipedia page',
   unverifiable: "❌ Couldn't verify this one",
   build: '🔧 Running the numbers',
   pr: '📮 Filing the paperwork',
@@ -41,7 +42,10 @@ export async function GET(request: Request) {
     })
   }
 
-  if (stepConclusion(job, STEP.unverifiable) === 'success') {
+  if (
+    stepConclusion(job, STEP.noWiki) === 'success' ||
+    stepConclusion(job, STEP.unverifiable) === 'success'
+  ) {
     return NextResponse.json({
       phase: 'done',
       outcome: 'unverifiable',

@@ -36,9 +36,7 @@ export async function checkAddDinoQuota(): Promise<{ ok: true } | { ok: false; m
 
   const data = (await res.json()) as { total_count: number; workflow_runs: WorkflowRun[] }
 
-  if (data.workflow_runs.some((r) => r.status !== 'completed')) {
-    return { ok: false, message: 'Another dino is already being researched — try again in a few minutes.', status: 429 }
-  }
+  // Parallel runs are allowed; daily cap is the spend ceiling.
   if (data.total_count >= DAILY_RUN_LIMIT) {
     return { ok: false, message: `Hit today's limit of ${DAILY_RUN_LIMIT} runs — try again tomorrow.`, status: 429 }
   }

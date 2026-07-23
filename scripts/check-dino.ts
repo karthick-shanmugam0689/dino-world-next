@@ -1,16 +1,17 @@
 /**
- * Deterministic pre-flight check for the add-dino skill.
+ * Deterministic pre-flight check for the add-dino pipeline.
  *
  *   npx tsx scripts/check-dino.ts "<name>"
  *
- * Prints a JSON report to stdout and sets an exit code:
- *   0  status:new          — not already in the roster; safe to proceed
- *   2  status:duplicate    — already exists; the skill MUST hard-stop
- *   3  status:error        — bad usage
+ * Exit codes:
+ *   0  status:new        — not in roster AND Wikipedia page exists → agent may run
+ *   2  status:duplicate  — already in the roster → stop (no agent)
+ *   4  status:not_found  — no Wikipedia page → stop (no agent)
+ *   3  status:error      — bad usage
  *
- * This script decides ONLY the mechanical question ("is it already here?").
- * It does NOT decide whether the animal is legitimate — it just attaches a
- * Wikipedia signal for the agent to weigh with its own knowledge.
+ * Legitimacy gate is Wikipedia existence only (no description keyword matching).
+ * Whether the page is a true Mesozoic reptile is still the agent's judgment
+ * once a page exists — but gibberish names never reach the agent.
  */
 import { dinosaurs } from '../data/dinos'
 import { families } from '../data/families'
@@ -35,7 +36,7 @@ async function wikipediaSignal(name: string) {
       `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`,
       { headers: { 'User-Agent': UA } },
     )
-    if (!res.ok) return { exists: false, httpStatus: res.status }
+    if (!res.ok) return { exists: false as const, httpStatus: res.status }
     const j = (await res.json()) as {
       type?: string
       title?: string
@@ -43,15 +44,15 @@ async function wikipediaSignal(name: string) {
       extract?: string
     }
     const notFound = j.type?.endsWith('not_found')
+    if (notFound || !j.title) return { exists: false as const, httpStatus: res.status }
     return {
-      exists: !notFound && !!j.title,
-      title: j.title ?? null,
-      // Wikidata one-liner, e.g. "genus of dinosaurs" — a strong legitimacy hint
+      exists: true as const,
+      title: j.title,
       description: j.description ?? null,
       extract: (j.extract ?? '').slice(0, 500),
     }
   } catch (err) {
-    return { exists: false, error: String(err) }
+    return { exists: false as const, error: String(err) }
   }
 }
 
@@ -85,6 +86,19 @@ async function main() {
   }
 
   const wikipedia = await wikipediaSignal(input)
+  if (!wikipedia.exists) {
+    emit(
+      {
+        status: 'not_found',
+        input,
+        candidateId,
+        wikipedia,
+        message: `No Wikipedia page found for "${input}" — refusing to spend agent tokens on an unverifiable name.`,
+      },
+      4,
+    )
+  }
+
   emit(
     {
       status: 'new',
@@ -92,10 +106,7 @@ async function main() {
       candidateId,
       wikipedia,
       existingFamilies: families.map((f) => ({ id: f.id, name: f.name })),
-      note:
-        'status:new means it is NOT a duplicate. Whether the animal is real/appropriate ' +
-        'is the agent\'s judgment call, using the wikipedia signal above plus its own ' +
-        'knowledge. If not confident it is a genuine dinosaur/pterosaur/marine reptile, STOP.',
+      note: 'Wikipedia page exists and the name is not a duplicate. The agent still decides clade/family/kind and writes content.',
     },
     0,
   )

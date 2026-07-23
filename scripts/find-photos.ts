@@ -1,14 +1,14 @@
 /**
- * Find candidate reference images for a species on Wikimedia Commons.
+ * Find + auto-select reference images for a species on Wikimedia Commons.
  *
  *   npx tsx scripts/find-photos.ts "<Wikipedia page title>"
  *
- * Prints ranked skeleton + life-restoration candidates (with resolved 960px
- * thumbnail URL, license, and Commons source page) as JSON. The agent picks
- * the best one of each and re-confirms the license before writing files.
+ * Prints JSON with:
+ *   - photos: DinoPhotoSet shape ready to drop into a dino record (may be {})
+ *   - skeletonCandidates / realisticCandidates: shortlists for debugging
  *
- * All fetching happens here (deterministic, not agent tokens): one media-list
- * call + a bounded number of imageinfo lookups.
+ * Selection is deterministic: first candidate whose license is CC0 / public
+ * domain / CC BY / CC BY-SA. No agent involvement.
  */
 const UA =
   'DinoVerse add-dino bot (https://github.com/karthick-shanmugam0689/dino-world-next)'
@@ -26,7 +26,10 @@ const EXCLUDE = [
   'location', 'stratigraph',
 ]
 
+const ALLOWED_LICENSE = /^(cc0|public domain|cc[- ]?by(?:[- ]?sa)?(?:\s+\d+(\.\d+)?)?)$/i
+
 type Candidate = { file: string; thumb: string; license: string; source: string }
+type DinoPhoto = { image: string; license: string; source: string }
 
 async function getJSON(url: string) {
   const res = await fetch(url, { headers: { 'User-Agent': UA } })
@@ -42,6 +45,10 @@ function classify(file: string): 'skeleton' | 'restoration' | null {
   return null
 }
 
+function licenseOk(license: string) {
+  return ALLOWED_LICENSE.test(license.trim())
+}
+
 /** Resolve a "File:Foo.jpg" title to a 960px thumb URL + license via the Commons API. */
 async function resolve(fileTitle: string): Promise<Candidate | null> {
   const api =
@@ -50,7 +57,18 @@ async function resolve(fileTitle: string): Promise<Candidate | null> {
     encodeURIComponent(fileTitle)
   try {
     const d = (await getJSON(api)) as {
-      query?: { pages?: Record<string, { imageinfo?: Array<{ thumburl?: string; url?: string; extmetadata?: Record<string, { value?: string }> }> }> }
+      query?: {
+        pages?: Record<
+          string,
+          {
+            imageinfo?: Array<{
+              thumburl?: string
+              url?: string
+              extmetadata?: Record<string, { value?: string }>
+            }>
+          }
+        >
+      }
     }
     const pages = d.query?.pages ?? {}
     for (const p of Object.values(pages)) {
@@ -67,6 +85,15 @@ async function resolve(fileTitle: string): Promise<Candidate | null> {
     /* skip unresolvable files */
   }
   return null
+}
+
+function toPhoto(c: Candidate): DinoPhoto {
+  return { image: c.thumb, license: c.license, source: c.source }
+}
+
+function pick(candidates: Candidate[]): DinoPhoto | undefined {
+  const hit = candidates.find((c) => c.thumb && licenseOk(c.license))
+  return hit ? toPhoto(hit) : undefined
 }
 
 async function main() {
@@ -91,7 +118,6 @@ async function main() {
     else if (cls === 'restoration') restorationFiles.push(it.title)
   }
 
-  // resolve at most 4 of each to bound the number of API calls
   const resolveAll = async (files: string[]) =>
     (await Promise.all(files.slice(0, 4).map(resolve))).filter((c): c is Candidate => !!c)
 
@@ -100,13 +126,23 @@ async function main() {
     resolveAll(restorationFiles),
   ])
 
+  const photos: { skeleton?: DinoPhoto; realistic?: DinoPhoto } = {}
+  const skeleton = pick(skeletonCandidates)
+  const realistic = pick(realisticCandidates)
+  if (skeleton) photos.skeleton = skeleton
+  if (realistic) photos.realistic = realistic
+
   process.stdout.write(
     JSON.stringify(
       {
         title,
+        photos,
         skeletonCandidates,
         realisticCandidates,
-        note: 'Pick the best ONE of each (a clear side-profile reads best). Re-verify the license before writing files; only CC0 / public domain / CC BY / CC BY-SA are allowed.',
+        note:
+          Object.keys(photos).length === 0
+            ? 'No acceptable licensed photos found — scaffold will use photos: {}.'
+            : 'photos was auto-selected (first CC0/PD/CC BY/CC BY-SA candidate per category).',
       },
       null,
       2,
