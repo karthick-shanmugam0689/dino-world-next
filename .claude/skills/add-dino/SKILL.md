@@ -1,137 +1,89 @@
 ---
 name: add-dino
-description: Add a new dinosaur (or Mesozoic reptile) to the DinoVerse field guide — research it, write its data folder, regenerate the index, verify, and open a PR. Use when asked to "add a dino", "add <species> to the site", or similar. Refuses duplicates and stops on anything uncertain.
+description: Add a new dinosaur (or Mesozoic reptile) to the DinoVerse field guide. Use when asked to "add a dino", "add <species> to the site", or similar. Refuses duplicates and unverifiable names.
 ---
 
 # Add one dinosaur to DinoVerse
 
-You are adding **one** species named by the user. Work in a single pass and
-follow these steps in order. The whole job should stay well under ~25 tool
-calls — if you find yourself exceeding that, STOP and report where you are.
+Add **one** species. Prefer deterministic scripts for pre-flight; use the model
+only for classification + content. Never fabricate facts, stats, dates, or
+image URLs.
 
-Never fabricate facts, stats, dates, or image URLs. If you can't find real
-information within the caps below, stop and say what's missing.
+## Who does what
 
-## Step 1 — Duplicate & legitimacy pre-flight (deterministic)
+| Step | Owner | Notes |
+|------|--------|--------|
+| Duplicate check | `scripts/check-dino.ts` | Hard-stop if already in roster |
+| Wikipedia exists? | `scripts/check-dino.ts` | Hard-stop if no page (gibberish never reaches the model) |
+| Photos | `scripts/find-photos.ts` | Auto-selects licensed skeleton/realistic into `photos` |
+| File scaffold | `scripts/scaffold-dino.ts` | Creates `data/dinos/<id>/` with photos + TODO placeholders |
+| Classify + fill | **You (model)** | Family/clade/kind/silhouette + replace TODOs; retune `model.ts` |
+| Index + build + PR | CI / you locally | `generate-dino-index.ts`, `tsc`, `build`, PR |
 
-Run:
-
-```bash
-npx tsx scripts/check-dino.ts "<name>"
-```
-
-- `status: "duplicate"` (exit 2) → **STOP.** Report the existing entry. Do nothing else.
-- `status: "new"` → read the `wikipedia` signal. Decide, using that signal **and
-  your own knowledge**, whether this is a genuine dinosaur / pterosaur / marine
-  reptile of the Mesozoic. If `wikipedia.exists` is false, or the description
-  doesn't support a real prehistoric reptile, or you are otherwise **not
-  confident it is legitimate → STOP** and say so. Do not guess.
-
-Note the `candidateId` and the `existingFamilies` list for later steps.
-
-## Step 2 — Research (HARD CAP: 2 web searches, 3 fetches)
-
-Gather only what the data files need: a 2–3 sentence description, 2–3 field-note
-facts, diet, period + date range, location, and approximate length / height /
-weight / top speed (wingspan too, if it's a pterosaur). Prefer the Wikipedia
-extract you already have. If that's enough, don't spend the searches.
-
-If the caps run out before you have the essentials, STOP and report the gap.
-
-## Step 3 — Classify (no tools, just decisions)
-
-Decide, and briefly state your reasoning for each:
-
-1. **Family** — reuse an id from `existingFamilies` if it fits; otherwise define
-   a new `Family` in `data/families.ts` (id = lowercase family name, e.g.
-   `compsognathidae`). Keep the description/traits style consistent with
-   neighbours. **The `familyId` you write into the dino's `index.ts` must be
-   the exact same string as an id already in `existingFamilies`, or the id of
-   the family you just added** — a mismatch compiles fine but crashes the
-   page at runtime (`generate-dino-index.ts` now checks this and will fail
-   loudly if it doesn't match, so a slip won't reach a PR, but get it right
-   the first time).
-2. **Clade** — a true dinosaur leaves `clade` unset. A marine reptile →
-   `clade: 'marine-reptile'`; a pterosaur → `clade: 'pterosaur'` (+ `wingSpanM`).
-3. **Body-plan `kind`** — pick from the FIVE existing kinds only:
-   `theropod | sauropod | quadruped | marine | pterosaur`. Choose the closest
-   existing species and base your `model` numbers on theirs, scaled to real size.
-   **If none of the five fit, STOP and ask** — do not invent a new kind or edit
-   `three/createDinoScene.ts`. New morphology uses existing `features.*` flags;
-   a brand-new flag needs a new `three/features/*.ts` module (see `three/README.md`).
-4. **Silhouette** — reuse the closest existing `SilhouetteKey` (see
-   `data/types.ts`). Only hand-draw a new SVG in `components/DinoIcon.tsx` if
-   nothing is even close; keep it in the same 120×80 right-facing viewBox style.
-
-## Step 4 — Reference photos
-
-**Required.** Always run:
+## Local workflow
 
 ```bash
-npx tsx scripts/find-photos.ts "<Wikipedia title>"
-```
-
-Pick the best ONE skeleton and ONE realistic candidate (a clear side profile
-reads best). Only accept CC0 / public domain / CC BY / CC BY-SA licenses. If a
-category has no acceptable candidate, omit it — the UI hides missing tabs.
-Record in the PR body whether photos were found or omitted (never invent URLs).
-
-## Step 5 — Write the files
-
-Create `data/dinos/<id>/model.ts` and `data/dinos/<id>/index.ts`, matching the
-exact shape of an existing folder (open `data/dinos/tyrannosaurus/` as the
-template). `model.ts` exports `model: DinoModelConfig`; `index.ts` exports a
-single `dino: Dino` object that includes:
-- `periodId` (`triassic` | `jurassic` | `cretaceous`) and `periodLabel` (display
-  string like `"Late Cretaceous · 68–66 Mya"`)
-- `photos: DinoPhotoSet` colocated on the dino (not a separate export)
-- `model` (imported from `./model`)
-
-Then regenerate the barrel **and** search index — **never edit
-`data/dinos/index.ts` or `data/search-index.ts` by hand**:
-
-```bash
+npx tsx scripts/check-dino.ts "<name>"          # must print status:new
+npx tsx scripts/find-photos.ts "<Wikipedia title from check>"
+CHECK_JSON='...' PHOTOS_JSON='...' npx tsx scripts/scaffold-dino.ts
+# then edit data/dinos/<id>/{index.ts,model.ts} — replace every TODO_*
 npx tsx scripts/generate-dino-index.ts
+npx tsc --noEmit -p tsconfig.json && npm run build
+# branch + PR (never push main)
 ```
 
-Add a new family to `data/families.ts` only if Step 3 decided so (keep the
-`as const` array — do not remove it). If the period is one we already list,
-nothing else is needed; the dino shows up automatically.
+`check-dino` exit codes: `0` new · `2` duplicate · `4` not_found · `3` error.
 
-If `find-photos.ts` returned no acceptable candidates, still write
-`photos: {}` and note that in the PR — the generator will warn but not fail.
+## CI workflow (site “Add dino”)
 
-## Step 6 — Verify (CAP: 2 fix attempts)
+Scripts already ran. Folder `data/dinos/<id>/` already exists with photos filled
+and `TODO_*` placeholders. Your job:
 
-```bash
-npx tsc --noEmit -p tsconfig.json
-npm run build
+1. Read `.claude/skills/add-dino/SKILL.md` (this file) once for conventions.
+2. Read the scaffolded `data/dinos/<id>/index.ts` and `model.ts`.
+3. Using the Wikipedia extract in the check JSON (and your knowledge), **edit**
+   those files — do not recreate them from scratch; **keep `photos` as-is**.
+4. Write `add-dino-result.json` (see below).
+5. Do **not** run scripts, build, commit, or open a PR.
+
+### Fill checklist (edit scaffold)
+
+Replace every `TODO_*` and fix defaults that are wrong:
+
+- `meaning`, `description` (2–3 sentences), `facts` (2–3 real facts)
+- `diet`, `location`, numeric stats (`lengthM`, `heightM`, `weightKg`, `speedKmh`; `wingSpanM` if pterosaur)
+- `periodId`: `triassic` | `jurassic` | `cretaceous`
+- `periodLabel`: display string, e.g. `"Late Cretaceous · 99–93 Mya"`
+- `familyId`: must be an id from `existingFamilies` in the check JSON, **or**
+  add one new family to `data/families.ts` (`as const` array) and use that id
+- `clade`: omit for true dinosaurs; `'marine-reptile'` or `'pterosaur'` otherwise
+- `silhouette`: existing `SilhouetteKey` from `data/types.ts` (new SVG only if nothing fits)
+- `color`: hex that fits the animal
+- `model.ts`: one of five kinds only — `theropod | sauropod | quadruped | marine | pterosaur`.
+  Copy numbers from the closest existing species, scaled to real size. Use existing
+  `features.*` flags only. **Do not** invent a new kind or edit `three/`.
+
+If you are not confident it is a genuine Mesozoic dinosaur / pterosaur / marine
+reptile, do not leave TODOs — write only:
+
+```json
+{"legitimate": false, "reason": "<why>"}
 ```
 
-If either fails, you may fix and retry at most twice. If still failing, STOP,
-leave the branch unpushed, and report the exact error — **never open a PR with
-broken code.**
+### Success result file
 
-## Step 7 — Open a PR (never push to main, never deploy)
-
-```bash
-git checkout -b add-dino/<id>
-git add -A
-git commit -m "Add <Name> to the field guide"
-git push -u origin add-dino/<id>
-gh pr create --title "Add <Name>" --body "$(cat <<'EOF'
-<what you added, sources + licenses, photo outcome, and any decisions worth a human check>
-
----
-request_id: <site pipeline correlation id — omit this line for manual PRs>
-EOF
-)"
+```json
+{
+  "legitimate": true,
+  "id": "<id>",
+  "name": "<display name>",
+  "newFamily": true,
+  "familyId": "<id>",
+  "reason": "<1-2 sentences for the human reviewer, including photo note>"
+}
 ```
 
-Report the PR URL. Do not merge it and do not run any deploy commands.
+## Stop conditions
 
-## Stop-conditions summary
-
-Hard-stop (report, don't PR) on any of: duplicate, not-confident-legitimate,
-missing essential data within caps, a body plan none of the five kinds fit, or
-build still broken after 2 fix attempts.
+Hard-stop (no PR): duplicate, Wikipedia not found, not confident it is legitimate,
+body plan needs a new kind, or build still broken after 2 local fix attempts.
