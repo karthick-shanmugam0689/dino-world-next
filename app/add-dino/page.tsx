@@ -5,7 +5,14 @@ import { useEffect, useRef, useState } from 'react'
 type Status =
   | { phase: 'idle' }
   | { phase: 'searching' | 'running'; stepName: string }
-  | { phase: 'done'; outcome: string; message: string; prUrl?: string | null }
+  | {
+      phase: 'done'
+      outcome: string
+      message: string
+      prUrl?: string | null
+      dinoUrl?: string | null
+      dinoName?: string | null
+    }
   | { phase: 'error'; message: string }
 
 export default function AddDinoPage() {
@@ -54,6 +61,11 @@ export default function AddDinoPage() {
         setStatus({ phase: 'error', message: data.error ?? 'Failed to trigger the pipeline.' })
         return
       }
+      // Instant duplicate — no workflow run needed.
+      if (data.phase === 'done') {
+        setStatus(data)
+        return
+      }
       startPolling(data.requestId)
     } catch (err) {
       setStatus({ phase: 'error', message: String(err) })
@@ -64,7 +76,9 @@ export default function AddDinoPage() {
     status.phase === 'done'
       ? status.outcome === 'success'
         ? '#a4d09c'
-        : '#e8927e'
+        : status.outcome === 'duplicate'
+          ? 'var(--text)'
+          : '#e8927e'
       : 'var(--text-dim)'
 
   return (
@@ -109,6 +123,13 @@ export default function AddDinoPage() {
           {status.phase === 'done' && (
             <div>
               <p style={{ margin: 0, color: outcomeColor, fontWeight: 600 }}>{status.message}</p>
+              {status.dinoUrl && (
+                <p style={{ marginTop: '0.6rem' }}>
+                  <a href={status.dinoUrl} className="family-link">
+                    View {status.dinoName ?? 'this dinosaur'} →
+                  </a>
+                </p>
+              )}
               {status.prUrl && (
                 <p style={{ marginTop: '0.6rem' }}>
                   <a href={status.prUrl} target="_blank" rel="noopener noreferrer" className="family-link">

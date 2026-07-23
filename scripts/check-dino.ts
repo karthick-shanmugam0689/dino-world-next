@@ -13,17 +13,11 @@
  * Whether the page is a true Mesozoic reptile is still the agent's judgment
  * once a page exists — but gibberish names never reach the agent.
  */
-import { dinosaurs } from '../data/dinos'
 import { families } from '../data/families'
+import { dinoPath, findExistingDino, slugifyDinoName } from '../lib/find-existing-dino'
 
 const UA =
   'DinoVerse add-dino bot (https://github.com/karthick-shanmugam0689/dino-world-next)'
-
-/** Our ids are the lowercased genus (first word of the name). */
-function slugify(name: string): string {
-  const first = name.trim().split(/\s+/)[0] ?? ''
-  return first.toLowerCase().replace(/[^a-z]/g, '')
-}
 
 function emit(obj: unknown, code: number): never {
   process.stdout.write(JSON.stringify(obj, null, 2) + '\n')
@@ -62,24 +56,23 @@ async function main() {
     emit({ status: 'error', message: 'Usage: npx tsx scripts/check-dino.ts "<name>"' }, 3)
   }
 
-  const candidateId = slugify(input)
-  const q = input.trim().toLowerCase()
-
-  const existing = dinosaurs.find(
-    (d) =>
-      d.id === candidateId ||
-      d.name.toLowerCase() === q ||
-      d.name.toLowerCase().split(/\s+/)[0] === q,
-  )
+  const candidateId = slugifyDinoName(input)
+  const existing = findExistingDino(input)
 
   if (existing) {
+    const path = dinoPath(existing.id)
     emit(
       {
         status: 'duplicate',
         input,
         candidateId,
-        existing: { id: existing.id, name: existing.name, familyId: existing.familyId },
-        message: `"${existing.name}" is already in the roster — nothing to do.`,
+        existing: {
+          id: existing.id,
+          name: existing.name,
+          familyId: existing.familyId,
+          path,
+        },
+        message: `"${existing.name}" is already in the roster — see ${path}`,
       },
       2,
     )

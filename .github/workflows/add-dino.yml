@@ -76,6 +76,10 @@ jobs:
           CHECK_JSON: ${{ steps.check.outputs.json }}
         run: |
           echo "$CHECK_JSON" | jq -r '.message'
+          PATH_HINT=$(echo "$CHECK_JSON" | jq -r '.existing.path // empty')
+          if [ -n "$PATH_HINT" ]; then
+            echo "Open on the site: https://dino-world-next.vercel.app${PATH_HINT}"
+          fi
 
       - name: ❌ No Wikipedia page
         if: steps.check.outputs.status == 'not_found'

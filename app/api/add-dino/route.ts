@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { addDinoRequestSchema } from '../../../lib/add-dino-schema'
+import { dinoPath, findExistingDino } from '../../../lib/find-existing-dino'
 import { checkAddDinoQuota, dispatchAddDinoWorkflow } from '../../../lib/github'
 
 export async function POST(request: Request) {
@@ -14,6 +15,17 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message ?? 'Invalid request'
     return NextResponse.json({ error: message }, { status: 400 })
+  }
+
+  const existing = findExistingDino(parsed.data.dinoName)
+  if (existing) {
+    return NextResponse.json({
+      phase: 'done',
+      outcome: 'duplicate',
+      message: `Already in the collection — ${existing.name} is right here.`,
+      dinoUrl: dinoPath(existing.id),
+      dinoName: existing.name,
+    })
   }
 
   const quota = await checkAddDinoQuota()
