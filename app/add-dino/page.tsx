@@ -1,5 +1,6 @@
 'use client'
 
+import { track } from '@vercel/analytics'
 import { useEffect, useRef, useState } from 'react'
 
 type Status =
@@ -26,7 +27,7 @@ export default function AddDinoPage() {
     }
   }, [])
 
-  const startPolling = (requestId: string) => {
+  const startPolling = (requestId: string, input: string) => {
     if (pollRef.current) clearInterval(pollRef.current)
     pollRef.current = setInterval(async () => {
       try {
@@ -38,7 +39,15 @@ export default function AddDinoPage() {
           return
         }
         setStatus(data)
-        if (data.phase === 'done' && pollRef.current) clearInterval(pollRef.current)
+        if (data.phase === 'done' && pollRef.current) {
+          clearInterval(pollRef.current)
+          // Workflow terminal outcomes (instant duplicates are tracked server-side).
+          track('Add Dino Outcome', {
+            outcome: String(data.outcome ?? 'unknown'),
+            input,
+            existingId: data.dinoUrl ? String(data.dinoUrl).replace(/^\/dino\//, '') : undefined,
+          })
+        }
       } catch {
         // transient network hiccup — keep polling, don't give up on one failed check
       }
@@ -61,12 +70,12 @@ export default function AddDinoPage() {
         setStatus({ phase: 'error', message: data.error ?? 'Failed to trigger the pipeline.' })
         return
       }
-      // Instant duplicate — no workflow run needed.
+      // Instant duplicate — no workflow run needed (server already tracked it).
       if (data.phase === 'done') {
         setStatus(data)
         return
       }
-      startPolling(data.requestId)
+      startPolling(data.requestId, dinoName.trim())
     } catch (err) {
       setStatus({ phase: 'error', message: String(err) })
     }
